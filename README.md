@@ -82,7 +82,7 @@ See **[my portfolio](https://kyledupont.github.io/)** for the professional front
 - Portainer + Agent (automation01, plex01)
 - Uptime Kuma (automation01) — v2.4.0
 - Homepage dashboard (automation01)
-- Plex (plex01)
+- Plex (plex01) — deliberately kept on its own VM so it can eventually be exposed to the internet (sharing outside the household) without widening `automation01`'s attack surface, see [Docs/Network.md](Docs/Network.md) "Remote access"
 - mcp-n8n (automation01) — community MCP server giving Claude Code n8n node/workflow knowledge, see [Docs/AI.md](Docs/AI.md)
 - Obsidian (testing) — vault at `S:\Obsidian\Dupontke`, `Homelab/Repo-Docs` auto-mirrored from this repo via git post-commit hook, see [Docs/Obsidian.md](Docs/Obsidian.md)
 - PostgreSQL (automation01) — v17, deployed via the first real Ansible playbook 2026-07-23, see [Docs/Ansible.md](Docs/Ansible.md)
@@ -99,6 +99,9 @@ See **[my portfolio](https://kyledupont.github.io/)** for the professional front
 - HashiCorp Vault (machine/app secrets — see [Docs/Security.md](Docs/Security.md))
 - Open WebUI
 - Ollama
+- Pi-hole — network-wide DNS + ad blocking, and a likely candidate for the "Internal DNS" future project below (resolving friendly hostnames for the eventual reverse proxy)
+- Dozzle — real-time Docker log viewer across hosts, for log review/debugging without shelling in
+- Jellyfin — backup/potential replacement for Plex; standing it up alongside Plex to actually evaluate it, not a committed switch
 - Homelable (network visual mapping — [github.com/Pouzor/homelable](https://github.com/Pouzor/homelable))
 - Keycloak or Authentik — self-hosted OAuth2/OIDC/SAML identity provider for hands-on SSO testing (Okta has no self-hosted option); planned eventual auth layer for the MCP Gateway, see [Docs/AI.md](Docs/AI.md). Idea captured 2026-07-24, not started.
 - Hermes Agent (self-hosted Discord IT-admin agent, via Ollama — see [Docs/AI.md](Docs/AI.md))
@@ -228,7 +231,7 @@ Static IPs (see [Docs/Network.md](Docs/Network.md) for full detail)
 
 - Reverse Proxy
 - SSL Certificates
-- Internal DNS
+- Internal DNS — Pi-hole (also covers network-wide ad blocking)
 - Active Directory
 - SSO Integration — Keycloak or Authentik (self-hosted, see [Docs/AI.md](Docs/AI.md))
 - AI Automation

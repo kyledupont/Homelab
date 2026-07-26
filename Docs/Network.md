@@ -23,7 +23,9 @@ Static IPs should also get a DHCP reservation/exclusion set on the router to pre
 
 ## Remote access
 
-Not yet configured. Original plan calls for Tailscale rather than exposing any service directly to the internet.
+Not yet configured. Original plan calls for Tailscale for general remote access to the lab, rather than exposing services directly to the internet.
+
+**`plex01` is the deliberate exception.** It's kept on its own VM specifically so it can eventually be exposed to the internet — sharing with people outside the household — without widening `automation01`'s attack surface, since `automation01` holds the Ansible SSH keys, the GitHub Actions runner, and the rest of the control-plane tooling. Not yet exposed; when it happens, options under consideration are Plex's own built-in Remote Access, Tailscale Funnel, or a reverse proxy + own domain (the last one is more work but better practice for the Reverse Proxy/SSL goals elsewhere in this repo).
 
 ## Notes
 

@@ -11,10 +11,6 @@
 
 ## 2026-07-26
 
-### Homepage dashboard config: the "push ≠ deployed" gap resurfaced
-- Added new bookmark links to Homepage's config and pushed to GitHub — the dashboard didn't show them. Same root cause already documented on 2026-07-15: `automation01` reads Homepage's config from its own local git checkout, not from GitHub directly, so a push alone never reaches it. Needed an explicit `git pull` (and a possible container restart) on `automation01` itself.
-- **This is the second time this exact gap has caused confusion, despite being written down the first time** — a documented gotcha doesn't prevent recurrence if the actual deploy step stays manual. Unlike Ansible (which got a self-hosted GitHub Actions runner to auto-deploy on push — see [Ansible.md](Ansible.md)), nothing auto-pulls config changes to `automation01` for plain Docker Compose services like Homepage. Flagged as a possible Future Project (README) rather than fixed now — worth the same auto-deploy pattern if this keeps tripping things up.
-
 ### plex01's isolation formalized as a deliberate security boundary
 - Retroactively documented (it wasn't originally a security decision — `plex01` started as migrating an existing separate Plex server onto the new lab, see 2026-07-14 below) that keeping Plex on its own VM, separate from `automation01`, is the right call regardless of origin: `automation01` holds the Ansible SSH keys, the GitHub Actions runner, and other control-plane tooling, so if `plex01` is ever exposed to the internet and compromised, the blast radius stays contained. See [Network.md](Network.md) "Remote access."
 

@@ -99,7 +99,7 @@ See **[my portfolio](https://kyledupont.github.io/)** for the professional front
 - HashiCorp Vault (machine/app secrets — see [Docs/Security.md](Docs/Security.md))
 - Open WebUI
 - Ollama
-- Pi-hole — network-wide DNS + ad blocking, and a likely candidate for the "Internal DNS" future project below (resolving friendly hostnames for the eventual reverse proxy). Deployed to `automation01` and confirmed resolving DNS correctly from other LAN devices 2026-07-28; router DHCP not yet pointed at it, so it's not actually network-wide yet — see [Docs/Network.md](Docs/Network.md).
+- Pi-hole — network-wide DNS + ad blocking, and a likely candidate for the "Internal DNS" future project below (resolving friendly hostnames for the eventual reverse proxy). Deployed to `automation01` 2026-07-28; ad blocking confirmed actually working (verified via query log + a known ad domain resolving to `0.0.0.0`) after manually pointing one PC's DNS at it. Router-wide DHCP still not pointed at it — see [Docs/Network.md](Docs/Network.md).
 - Dozzle — real-time Docker log viewer across hosts, for log review/debugging without shelling in
 - Jellyfin — backup/potential replacement for Plex; standing it up alongside Plex to actually evaluate it, not a committed switch
 - Homelable (network visual mapping — [github.com/Pouzor/homelable](https://github.com/Pouzor/homelable))

@@ -29,7 +29,9 @@ Not yet configured. Original plan calls for Tailscale for general remote access 
 
 ## Pi-hole (internal DNS + ad blocking)
 
-Deployed to `automation01` 2026-07-28 (`Docker/Pihole/docker-compose.yml`). Confirmed resolving DNS correctly from another LAN device (`192.168.1.89`) via both the admin UI (`:8081/admin`) and real `nslookup`/`dig` queries. **Not yet network-wide** — the router's DHCP DNS setting hasn't been pointed at it yet, so only devices explicitly configured to use `192.168.1.20` as DNS are actually using it right now.
+Deployed to `automation01` 2026-07-28 (`Docker/Pihole/docker-compose.yml`). Confirmed resolving DNS correctly from another LAN device (`192.168.1.89`) via both the admin UI (`:8081/admin`) and real `nslookup`/`dig` queries — **and confirmed actually blocking ads**, not just resolving: manually pointed that PC's IPv4 DNS at `192.168.1.20`, verified via the Query Log (ad-network domains showing as blocked in real time while browsing) and a direct `nslookup` of a known ad domain resolving to `0.0.0.0` instead of a real IP.
+
+**Not yet network-wide** — only that one PC is manually configured to use Pi-hole. The router's DHCP DNS setting still hasn't been pointed at it, so every other device on the network is still using whatever DNS it got by default.
 
 - **Port 53 conflict never actually materialized** — `systemd-resolved` and Docker's `docker-proxy` coexisted fine on `automation01` without the anticipated fix being needed.
 - **The admin-password env var (`FTLCONF_webserver_api_password`) was correct as documented** — no v6 drift issue there.

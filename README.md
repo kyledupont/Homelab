@@ -237,6 +237,7 @@ Static IPs (see [Docs/Network.md](Docs/Network.md) for full detail)
 - AI Automation
 - Backup Automation
 - Public-facing custom MCP server (internet-exposed) — see [Docs/AI.md](Docs/AI.md)
+- Auto-deploy for non-Ansible config changes (e.g. Homepage) — mirrors the Ansible self-hosted-runner pattern; currently these need a manual `git pull` on `automation01`, which has caused the same "pushed but not showing up" confusion twice (2026-07-15, 2026-07-26 — see [Docs/LessonsLearned.md](Docs/LessonsLearned.md))
 
 ---
 

@@ -1,0 +1,31 @@
+services:
+  pihole:
+    # TODO: pin to a specific version once confirmed working, rather than floating on :latest —
+    # see the Uptime Kuma floating-tag lesson in Docs/LessonsLearned.md (2026-07-15): a floating
+    # tag can silently jump a major version and break things with zero warning.
+    image: pihole/pihole:latest
+    container_name: pihole
+    restart: unless-stopped
+    environment:
+      - TZ=America/New_York
+      # Pi-hole v6 env var name for the admin password — CONFIRM against Pi-hole's current
+      # docs before first run. This changed once already (pre-v6 used WEBPASSWORD); if this
+      # repo is being read well after 2026-07, it may have changed again.
+      - FTLCONF_webserver_api_password=${PIHOLE_PASSWORD}
+      # Upstream resolver Pi-hole forwards non-blocked queries to. Cloudflare here — change
+      # if you prefer a different one. Syntax (semicolon-separated) also worth confirming
+      # against current docs.
+      - FTLCONF_dns_upstreams=1.1.1.1;1.0.0.1
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8081:80"
+    cap_add:
+      - NET_ADMIN # only needed if Pi-hole's own DHCP server feature gets used — harmless if it doesn't
+    volumes:
+      - pihole_etc:/etc/pihole
+      - pihole_dnsmasq:/etc/dnsmasq.d
+
+volumes:
+  pihole_etc:
+  pihole_dnsmasq:

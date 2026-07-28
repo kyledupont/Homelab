@@ -27,6 +27,14 @@ Not yet configured. Original plan calls for Tailscale for general remote access 
 
 **`plex01` is the deliberate exception.** It's kept on its own VM specifically so it can eventually be exposed to the internet — sharing with people outside the household — without widening `automation01`'s attack surface, since `automation01` holds the Ansible SSH keys, the GitHub Actions runner, and the rest of the control-plane tooling. Not yet exposed; when it happens, options under consideration are Plex's own built-in Remote Access, Tailscale Funnel, or a reverse proxy + own domain (the last one is more work but better practice for the Reverse Proxy/SSL goals elsewhere in this repo).
 
+## Planned: Pi-hole (internal DNS + ad blocking)
+
+Compose file written 2026-07-28 (`Docker/Pihole/docker-compose.yml`), targeting `automation01` alongside the other Docker services. Not deployed yet.
+
+- **Port 53 conflict is expected**: Ubuntu's `systemd-resolved` almost always has something bound to port 53 already. Before first run, check `sudo ss -tulpn | grep :53` on `automation01`; if `systemd-resolved`'s stub listener is using it, set `DNSStubListener=no` in `/etc/systemd/resolved.conf` and `sudo systemctl restart systemd-resolved` — then confirm `automation01` itself can still resolve DNS (`curl` something) before moving on, since this affects the host's own resolution, not just the container.
+- **Pi-hole's admin-password env var changed once already** (pre-v6 `WEBPASSWORD` → v6 `FTLCONF_webserver_api_password`) — confirm the current name against Pi-hole's own docs before deploying, don't trust the compose file's comment blindly if it's been a while.
+- **Do not point the router's DHCP/DNS settings at Pi-hole until it's confirmed working standalone** (`dig @192.168.1.20 google.com` from another device on the LAN, plus the admin UI at `:8081/admin`). That's a whole-household-impact change — deliberate separate step, not part of initial deploy.
+
 ## Notes
 
 - All current VMs use static IPs assigned via Proxmox cloud-init (`ipconfig0`), not DHCP reservations on the router.

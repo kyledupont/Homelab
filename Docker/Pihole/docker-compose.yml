@@ -16,6 +16,13 @@ services:
       # if you prefer a different one. Syntax (semicolon-separated) also worth confirming
       # against current docs.
       - FTLCONF_dns_upstreams=1.1.1.1;1.0.0.1
+      # Without this, Pi-hole only answers queries it considers "local" — on Docker's default
+      # bridge network that means only the Docker bridge subnet, not the real LAN. Confirmed
+      # via real troubleshooting 2026-07-28: TCP/UDP 53 were reachable (handshake succeeded)
+      # but every actual query from another LAN device timed out until this was set. Currently
+      # set live via the web UI (Settings > DNS > Interface listening behavior); added here too
+      # so a future redeploy from a fresh volume doesn't silently lose it.
+      - FTLCONF_dns_listeningMode=ALL
     ports:
       - "53:53/tcp"
       - "53:53/udp"

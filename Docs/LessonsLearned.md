@@ -1,5 +1,14 @@
 # Lessons Learned
 
+## 2026-07-28
+
+### Pi-hole in Docker: reachable ≠ answering, and the difference is diagnostic gold
+- First symptom: `dig @192.168.1.20 google.com` from another LAN device timed out completely ("no servers could be reached"), while the exact same query against `127.0.0.1` on `automation01` itself worked perfectly. Easy to jump straight to "firewall is blocking the port" — which turned out to be half right and half wrong.
+- **Systematically ruled out, in order**: `ss -tulpn` showed `docker-proxy` correctly bound to `0.0.0.0:53` (so the earlier-anticipated `systemd-resolved` port conflict never actually happened); `ufw` was inactive; Proxmox's per-VM firewall was explicitly disabled (`Firewall: No` in the VM's Options tab) — so nothing at the network/firewall layer was the culprit, despite that being the obvious first suspect for "port unreachable from outside."
+- **The real clue was TCP succeeding while UDP (and even TCP-forced `nslookup -vc`) failed to get an actual answer**: `Test-NetConnection -Port 53` reported `TcpTestSucceeded: True` — a raw TCP handshake completed — but no DNS response ever came back over it. A completed handshake with no application response, only from non-loopback sources, pointed at the *application* silently refusing the query, not the network dropping it.
+- **Root cause: Pi-hole's own DNS listening mode**, not Docker, not a firewall. On Docker's default bridge network, Pi-hole defaults to only trusting "local" queries — which from the container's perspective means the Docker bridge subnet, not the real LAN. Docker forwards every packet correctly; Pi-hole's DNS engine (FTL) just ignores anything it doesn't consider local. Fix: `FTLCONF_dns_listeningMode=ALL` (Settings → DNS → "Interface listening behavior" → "Listen on all interfaces, permit all origins" in the web UI, or the equivalent env var in the compose file for a fresh deploy).
+- **General lesson: "connects but doesn't respond" and "doesn't connect at all" are different failure classes and point in different directions.** A successful handshake with silence afterward — especially only for non-loopback traffic — is a strong signal to look at the *application's* own source-filtering logic before spending more time on firewalls/NAT/routing.
+
 ## 2026-07-26
 
 ### Homepage dashboard config: the "push ≠ deployed" gap resurfaced

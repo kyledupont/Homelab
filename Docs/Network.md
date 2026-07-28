@@ -27,13 +27,14 @@ Not yet configured. Original plan calls for Tailscale for general remote access 
 
 **`plex01` is the deliberate exception.** It's kept on its own VM specifically so it can eventually be exposed to the internet — sharing with people outside the household — without widening `automation01`'s attack surface, since `automation01` holds the Ansible SSH keys, the GitHub Actions runner, and the rest of the control-plane tooling. Not yet exposed; when it happens, options under consideration are Plex's own built-in Remote Access, Tailscale Funnel, or a reverse proxy + own domain (the last one is more work but better practice for the Reverse Proxy/SSL goals elsewhere in this repo).
 
-## Planned: Pi-hole (internal DNS + ad blocking)
+## Pi-hole (internal DNS + ad blocking)
 
-Compose file written 2026-07-28 (`Docker/Pihole/docker-compose.yml`), targeting `automation01` alongside the other Docker services. Not deployed yet.
+Deployed to `automation01` 2026-07-28 (`Docker/Pihole/docker-compose.yml`). Confirmed resolving DNS correctly from another LAN device (`192.168.1.89`) via both the admin UI (`:8081/admin`) and real `nslookup`/`dig` queries. **Not yet network-wide** — the router's DHCP DNS setting hasn't been pointed at it yet, so only devices explicitly configured to use `192.168.1.20` as DNS are actually using it right now.
 
-- **Port 53 conflict is expected**: Ubuntu's `systemd-resolved` almost always has something bound to port 53 already. Before first run, check `sudo ss -tulpn | grep :53` on `automation01`; if `systemd-resolved`'s stub listener is using it, set `DNSStubListener=no` in `/etc/systemd/resolved.conf` and `sudo systemctl restart systemd-resolved` — then confirm `automation01` itself can still resolve DNS (`curl` something) before moving on, since this affects the host's own resolution, not just the container.
-- **Pi-hole's admin-password env var changed once already** (pre-v6 `WEBPASSWORD` → v6 `FTLCONF_webserver_api_password`) — confirm the current name against Pi-hole's own docs before deploying, don't trust the compose file's comment blindly if it's been a while.
-- **Do not point the router's DHCP/DNS settings at Pi-hole until it's confirmed working standalone** (`dig @192.168.1.20 google.com` from another device on the LAN, plus the admin UI at `:8081/admin`). That's a whole-household-impact change — deliberate separate step, not part of initial deploy.
+- **Port 53 conflict never actually materialized** — `systemd-resolved` and Docker's `docker-proxy` coexisted fine on `automation01` without the anticipated fix being needed.
+- **The admin-password env var (`FTLCONF_webserver_api_password`) was correct as documented** — no v6 drift issue there.
+- **Real gotcha hit: Pi-hole only answered loopback queries, not LAN queries, until `FTLCONF_dns_listeningMode=ALL` was set.** Full diagnostic trail and why in [LessonsLearned.md](LessonsLearned.md) 2026-07-28 — worth reading before touching this again, since the symptom (TCP handshake succeeds, but no actual DNS response, only from non-loopback sources) doesn't look like a listening-mode problem at first glance.
+- **Still not done**: pointing the router's DHCP/DNS settings at Pi-hole — deliberate separate step, whole-household impact, not yet taken.
 
 ## Notes
 

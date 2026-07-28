@@ -6,7 +6,7 @@ This repository documents my self-hosted infrastructure for building, testing, a
 
 The lab is designed to mirror production environments as closely as possible while remaining cost effective for home use.
 
-See **[my portfolio](https://kyledupont.github.io/)** for the professional front door onto this work, **[the system map](https://kyledupont.github.io/Homelab/)** for a live diagram of every host and how they connect, [Docs/Architecture.md](Docs/Architecture.md) for the current build, [Docs/Network.md](Docs/Network.md) and [Docs/Storage.md](Docs/Storage.md) for infrastructure detail, [Docs/AI.md](Docs/AI.md) for the AI/MCP/agents roadmap, [Docs/Security.md](Docs/Security.md) for the credential/secrets management plan, [Docs/Terraform.md](Docs/Terraform.md) for the IaC provisioning plan, [Docs/Ansible.md](Docs/Ansible.md) for the configuration-management plan, [Docs/Kubernetes.md](Docs/Kubernetes.md) for the K3s cluster, [Docs/Portfolio.md](Docs/Portfolio.md) for the public portfolio website plan, [Docs/LessonsLearned.md](Docs/LessonsLearned.md) for what's been learned along the way, and [Docs/Commands.md](Docs/Commands.md) for a running cheat sheet of commonly used commands.
+See **[my portfolio](https://kyledupont.github.io/)** for the professional front door onto this work, **[the system map](https://kyledupont.github.io/Homelab/)** for a live diagram of every host and how they connect, [Docs/Architecture.md](Docs/Architecture.md) for the current build, [Docs/Network.md](Docs/Network.md) and [Docs/Storage.md](Docs/Storage.md) for infrastructure detail, [Docs/AI.md](Docs/AI.md) for the AI/MCP/agents roadmap, [Docs/Security.md](Docs/Security.md) for the credential/secrets management plan, [Docs/Terraform.md](Docs/Terraform.md) for the IaC provisioning plan, [Docs/Ansible.md](Docs/Ansible.md) for the configuration-management plan, [Docs/Kubernetes.md](Docs/Kubernetes.md) for the K3s cluster, [Docs/SQL.md](Docs/SQL.md) for the Postgres/SQL exercises, [Docs/Portfolio.md](Docs/Portfolio.md) for the public portfolio website plan, [Docs/LessonsLearned.md](Docs/LessonsLearned.md) for what's been learned along the way, and [Docs/Commands.md](Docs/Commands.md) for a running cheat sheet of commonly used commands.
 
 ---
 
@@ -85,7 +85,7 @@ See **[my portfolio](https://kyledupont.github.io/)** for the professional front
 - Plex (plex01) — deliberately kept on its own VM so it can eventually be exposed to the internet (sharing outside the household) without widening `automation01`'s attack surface, see [Docs/Network.md](Docs/Network.md) "Remote access"
 - mcp-n8n (automation01) — community MCP server giving Claude Code n8n node/workflow knowledge, see [Docs/AI.md](Docs/AI.md)
 - Obsidian (testing) — vault at `S:\Obsidian\Dupontke`, `Homelab/Repo-Docs` auto-mirrored from this repo via git post-commit hook, see [Docs/Obsidian.md](Docs/Obsidian.md)
-- PostgreSQL (automation01) — v17, deployed via the first real Ansible playbook 2026-07-23, see [Docs/Ansible.md](Docs/Ansible.md)
+- PostgreSQL (automation01) — v17, deployed via the first real Ansible playbook 2026-07-23, see [Docs/Ansible.md](Docs/Ansible.md); real homelab-inventory schema + indexing/EXPLAIN ANALYZE/row-locking exercises run live 2026-07-28, see [Docs/SQL.md](Docs/SQL.md)
 
 ## Planned
 

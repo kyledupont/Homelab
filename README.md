@@ -85,8 +85,10 @@ See **[my portfolio](https://kyledupont.github.io/)** for the professional front
 - Homepage dashboard (automation01)
 - Plex (plex01) — deliberately kept on its own VM so it can eventually be exposed to the internet (sharing outside the household) without widening `automation01`'s attack surface, see [Docs/Network.md](Docs/Network.md) "Remote access"
 - mcp-n8n (automation01) — community MCP server giving Claude Code n8n node/workflow knowledge, see [Docs/AI.md](Docs/AI.md)
+- mcp-uptime-kuma (automation01) — custom TypeScript MCP server exposing Uptime Kuma status as a tool for Claude Code, see [Docs/AI.md](Docs/AI.md)
 - Obsidian (testing) — vault at `S:\Obsidian\Dupontke`, `Homelab/Repo-Docs` auto-mirrored from this repo via git post-commit hook, see [Docs/Obsidian.md](Docs/Obsidian.md)
 - PostgreSQL (automation01) — v17, deployed via the first real Ansible playbook 2026-07-23, see [Docs/Ansible.md](Docs/Ansible.md); real homelab-inventory schema + indexing/EXPLAIN ANALYZE/row-locking exercises run live 2026-07-28, see [Docs/SQL.md](Docs/SQL.md)
+- Pi-hole (automation01) — network-wide DNS + ad blocking, deployed 2026-07-28; ad blocking confirmed actually working (verified via query log + a known ad domain resolving to `0.0.0.0`) after manually pointing one PC's DNS at it. Router-wide DHCP still not pointed at it, so not yet network-wide — see [Docs/Network.md](Docs/Network.md).
 
 ## Planned
 
@@ -100,7 +102,6 @@ See **[my portfolio](https://kyledupont.github.io/)** for the professional front
 - HashiCorp Vault (machine/app secrets — see [Docs/Security.md](Docs/Security.md))
 - Open WebUI
 - Ollama
-- Pi-hole — network-wide DNS + ad blocking, and a likely candidate for the "Internal DNS" future project below (resolving friendly hostnames for the eventual reverse proxy). Deployed to `automation01` 2026-07-28; ad blocking confirmed actually working (verified via query log + a known ad domain resolving to `0.0.0.0`) after manually pointing one PC's DNS at it. Router-wide DHCP still not pointed at it — see [Docs/Network.md](Docs/Network.md).
 - Dozzle — real-time Docker log viewer across hosts, for log review/debugging without shelling in
 - Jellyfin — backup/potential replacement for Plex; standing it up alongside Plex to actually evaluate it, not a committed switch
 - Homelable (network visual mapping — [github.com/Pouzor/homelable](https://github.com/Pouzor/homelable))
@@ -233,7 +234,7 @@ Static IPs (see [Docs/Network.md](Docs/Network.md) for full detail)
 
 - Reverse Proxy
 - SSL Certificates
-- Internal DNS — Pi-hole (also covers network-wide ad blocking)
+- Internal DNS network-wide — Pi-hole itself is deployed and confirmed blocking ads (see Docker Services above), but the router's DHCP still isn't pointed at it, so only one manually-configured PC actually uses it today
 - Active Directory
 - SSO Integration — Keycloak or Authentik (self-hosted, see [Docs/AI.md](Docs/AI.md))
 - AI Automation

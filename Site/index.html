@@ -157,23 +157,25 @@
   }
 
   .proxmox-box {
-    border: 1px dashed var(--border);
-    border-radius: 12px;
-    padding: 1.6rem 1.3rem 1.3rem;
+    border: 2px solid var(--build);
+    border-radius: 14px;
+    padding: 2rem 1.5rem 1.5rem;
     position: relative;
-    margin-top: 0.5rem;
+    margin-top: 1.1rem;
   }
   .proxmox-label {
     position: absolute;
-    top: -0.7rem;
+    top: -0.85rem;
     left: 1.2rem;
     background: var(--bg);
-    padding: 0 0.5rem;
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
+    padding: 0 0.6rem;
+    font-size: 0.76rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--text-faint);
+    color: var(--build);
+    font-weight: 600;
   }
+  .proxmox-box .bastion { margin-top: 0; }
   .managed-hosts {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -233,6 +235,7 @@
   .legend-line { width: 1.4rem; height: 0; border-top: 1px solid var(--text-faint); }
   .legend-line.dashed { border-top-style: dashed; border-color: var(--alt); }
   .legend-line.solid-hub { border-top: 2px solid var(--hub); }
+  .legend-line.solid-build { border-top: 2px solid var(--build); }
 
   .closing { margin-top: 1.6rem; font-size: 1rem; max-width: 66ch; color: var(--text); }
   .closing b { color: var(--hub); }
@@ -298,24 +301,25 @@
     <div class="line"></div>
   </div>
 
-  <div class="bastion">
-    <div class="bastion-head">
-      <span class="card-name">automation01</span>
-      <span class="bastion-tag">the bastion</span>
-    </div>
-    <div class="bastion-ip"><code>192.168.1.20</code> — the one machine everything else routes through</div>
-    <div class="roles">
-      <div class="role"><span class="n">Docker host</span><span class="t">n8n, Postgres, MCP servers, Homepage, Pi-hole</span></div>
-      <div class="role"><span class="n">Ansible control node</span><span class="t">holds <code>ansible_ed25519</code>, SSHes out to manage other hosts</span></div>
-      <div class="role"><span class="n">GitHub Actions runner</span><span class="t">systemd service, polls GitHub, executes jobs locally</span></div>
-      <div class="role"><span class="n">kubectl control point</span><span class="t">holds the K3s kubeconfig, talks to the cluster's API</span></div>
-    </div>
-  </div>
-
-  <p class="fanout-label">FROM HERE, AUTOMATION01 REACHES OUT TO EVERYTHING BELOW</p>
-
   <div class="proxmox-box">
-    <span class="proxmox-label">Proxmox (hypervisor) — hosts every VM below</span>
+    <span class="proxmox-label">Proxmox (hypervisor) · 192.168.1.10 — every card below runs as a VM on this one physical box</span>
+
+    <div class="bastion">
+      <div class="bastion-head">
+        <span class="card-name">automation01</span>
+        <span class="bastion-tag">the bastion</span>
+      </div>
+      <div class="bastion-ip"><code>192.168.1.20</code> — the one machine everything else routes through</div>
+      <div class="roles">
+        <div class="role"><span class="n">Docker host</span><span class="t">n8n, Postgres, MCP servers, Homepage, Pi-hole</span></div>
+        <div class="role"><span class="n">Ansible control node</span><span class="t">holds <code>ansible_ed25519</code>, SSHes out to manage other hosts</span></div>
+        <div class="role"><span class="n">GitHub Actions runner</span><span class="t">systemd service, polls GitHub, executes jobs locally</span></div>
+        <div class="role"><span class="n">kubectl control point</span><span class="t">holds the K3s kubeconfig, talks to the cluster's API</span></div>
+      </div>
+    </div>
+
+    <p class="fanout-label">FROM HERE, AUTOMATION01 REACHES OUT TO EVERYTHING ELSE PROXMOX HOSTS</p>
+
     <div class="managed-hosts">
       <div class="card">
         <span class="edge-label">SSH, ansible key — ongoing config</span>
@@ -354,6 +358,7 @@
   </div>
 
   <div class="legend">
+    <div class="legend-item"><span class="legend-line solid-build"></span>Proxmox — the physical hypervisor every VM below runs on</div>
     <div class="legend-item"><span class="legend-line solid-hub"></span>automation01 — the bastion, control point for everything</div>
     <div class="legend-item"><span class="legend-line"></span>Direct SSH / API connection</div>
     <div class="legend-item"><span class="legend-line dashed"></span>Reachable, but deliberately not centrally managed</div>

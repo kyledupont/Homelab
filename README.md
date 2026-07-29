@@ -12,16 +12,16 @@ See **[my portfolio](https://kyledupont.github.io/)** for the professional front
 
 # Goals
 
-- Learn Infrastructure as Code (Terraform)
-- Learn Configuration Management (Ansible)
-- Learn Docker & Docker Compose
-- Learn Kubernetes (K3s)
+- Infrastructure as Code (Terraform)
+- Configuration Management (Ansible)
+- Docker & Docker Compose
+- Kubernetes (K3s)
 - Build enterprise monitoring with Grafana
 - Host a TrueNAS storage server
 - Playground for Windows Server & Active Directory
-- Learn GitHub Actions CI/CD
+- GitHub Actions CI/CD
 - Experiment with local AI using an RTX 4000 GPU
-- Learn the Model Context Protocol (MCP) and build a custom MCP server exposing this homelab's infrastructure to AI agents
+- Model Context Protocol (MCP) and build a custom MCP server exposing this homelab's infrastructure to AI agents
 - Build custom AI agents (e.g. via the Claude Agent SDK) that can operate against homelab services
 - Integrate AI (Claude, local LLMs via Ollama) into n8n automation workflows
 - Build an enterprise-style secrets management environment with HashiCorp Vault for machine/app secrets (see [Docs/Security.md](Docs/Security.md)) — human/admin logins stay in Google Password Manager, not self-hosted
@@ -169,7 +169,7 @@ Static IPs (see [Docs/Network.md](Docs/Network.md) for full detail)
 
 ---
 
-# Learning Progress
+# Progress
 
 ## Completed
 

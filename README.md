@@ -16,6 +16,7 @@ See **[my portfolio](https://kyledupont.github.io/)** for the professional front
 - Configuration Management (Ansible)
 - Docker & Docker Compose
 - Kubernetes (K3s)
+- SQL / PostgreSQL — schema design, indexing, query performance, transactions & locking
 - Build enterprise monitoring with Grafana
 - Host a TrueNAS storage server
 - Playground for Windows Server & Active Directory
@@ -208,6 +209,7 @@ Static IPs (see [Docs/Network.md](Docs/Network.md) for full detail)
 - [x] Terraform — provider (`bpg/proxmox`); full lifecycle proven on a disposable test VM (`tf-test01`: applied, SSH-verified, destroyed cleanly); then **`automation01` imported into Terraform state 2026-07-22** — see [Docs/Terraform.md](Docs/Terraform.md) for the full permission/import gotchas and what "Terraform-managed" now means for that VM. **`plex01` imported and applied 2026-07-24** (triggered an unplanned ~15-minute reboot — see Docs/Terraform.md "Gotchas hit").
 - [x] Ansible — runs from `automation01` (control node can't be Windows natively — see [Docs/Ansible.md](Docs/Ansible.md)); first playbook applied 2026-07-23, secrets handled via Ansible Vault, not a plaintext `.env`.
 - [x] PostgreSQL — deployed via that first Ansible playbook 2026-07-23 (v17, `automation01`), connected to and queried for real (not just a healthy-looking container) — see [Docs/Ansible.md](Docs/Ansible.md).
+- [x] SQL deep dive — real homelab-inventory schema (hosts/services/ports/dependencies, FKs indexed deliberately), proved indexing's real-world impact via `EXPLAIN ANALYZE` on a synthetic 2M-row table (46.9ms seq scan → 2.96ms with an index, ~16x), and demonstrated row-level locking across two genuinely concurrent `psql` sessions with wall-clock timing — 2026-07-28, see [Docs/SQL.md](Docs/SQL.md).
 - [x] Ansible widened to a second, SSH-managed host — `plex01` added to inventory via a dedicated `automation01`-generated keypair, `deploy_plex.yml` applied and confirmed idempotent (unchanged container uptime), 2026-07-23 — see [Docs/Ansible.md](Docs/Ansible.md).
 - [x] GitHub Actions — self-hosted runner on `automation01` (systemd service), auto-runs Ansible playbooks on push to `main`; push-trigger-only to stay safe on a public repo — see [Docs/Ansible.md](Docs/Ansible.md).
 - [x] Kubernetes — single-node K3s cluster, `k3s-master01` provisioned via Terraform (2 vCPU/4GB RAM, chosen deliberately minimal given the lab's 32GB total budget) and bootstrapped via Ansible; kubectl access lives on `automation01`, same bastion-host pattern as Ansible/GitHub Actions. First real workload deployed, load-balancing verified over actual HTTP requests, then torn down (smoke test only) — 2026-07-24, see [Docs/Kubernetes.md](Docs/Kubernetes.md).

@@ -137,7 +137,7 @@
   .bastion-ip { font-size: 0.85rem; color: var(--text-faint); margin: 0 0 1rem; }
   .roles {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 0.7rem;
   }
   .role {
@@ -148,6 +148,17 @@
   }
   .role .n { font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); display: block; margin-bottom: 0.3rem; }
   .role .t { font-size: 0.85rem; color: var(--text); }
+  .role-docker { grid-column: 1 / -1; }
+  .svc-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem 1.2rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .svc-list li { font-size: 0.83rem; color: var(--text-dim); }
+  .svc-list li b { color: var(--text); font-weight: 600; }
 
   .fanout-label {
     text-align: center;
@@ -252,7 +263,8 @@
 
   @media (max-width: 720px) {
     .actors { grid-template-columns: 1fr; }
-    .roles { grid-template-columns: 1fr 1fr; }
+    .roles { grid-template-columns: 1fr; }
+    .svc-list { grid-template-columns: 1fr; }
     .managed-hosts { grid-template-columns: 1fr; }
     .github-row { flex-direction: column; }
     .github-arrow { min-width: 0; }
@@ -311,7 +323,19 @@
       </div>
       <div class="bastion-ip"><code>192.168.1.20</code> — the one machine everything else routes through</div>
       <div class="roles">
-        <div class="role"><span class="n">Docker host</span><span class="t">n8n, Postgres, MCP servers, Homepage, Pi-hole</span></div>
+        <div class="role role-docker">
+          <span class="n">Docker host — 8 containers</span>
+          <ul class="svc-list">
+            <li><b>n8n</b> — workflow automation</li>
+            <li><b>Postgres</b> — SQL Database</li>
+            <li><b>Portainer</b> — Docker UI, logs, manages plex01 too via Agent</li>
+            <li><b>Uptime Kuma</b> — uptime monitoring across every service</li>
+            <li><b>Homepage</b> — single-pane dashboard linking everything</li>
+            <li><b>Pi-hole</b> — network-wide DNS + ad blocking</li>
+            <li><b>mcp-uptime-kuma</b> — custom MCP server, exposes Uptime Kuma to Claude</li>
+            <li><b>mcp-n8n</b> — community MCP server, gives Claude n8n workflow access</li>
+          </ul>
+        </div>
         <div class="role"><span class="n">Ansible control node</span><span class="t">holds <code>ansible_ed25519</code>, SSHes out to manage other hosts</span></div>
         <div class="role"><span class="n">GitHub Actions runner</span><span class="t">systemd service, polls GitHub, executes jobs locally</span></div>
         <div class="role"><span class="n">kubectl control point</span><span class="t">holds the K3s kubeconfig, talks to the cluster's API</span></div>

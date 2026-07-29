@@ -3,7 +3,7 @@
 ## Current state (2026-07-15)
 
 ```
-Proxmox VE 9.2.2 (bare metal, 192.168.1.209, 32GB RAM)
+Proxmox VE 9.2.2 (bare metal, 192.168.1.10, 32GB RAM)
 │
 ├── Local storage
 │   ├── local-lvm   — boot SSD (512GB) — Proxmox OS + original VM disks

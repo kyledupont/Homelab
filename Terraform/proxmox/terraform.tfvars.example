@@ -4,7 +4,7 @@
 proxmox_api_token = "terraform@pve!terraform=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 
 # Uncomment/override only if these differ from the defaults in variables.tf
-# proxmox_endpoint     = "https://192.168.1.209:8006/"
+# proxmox_endpoint     = "https://192.168.1.10:8006/"
 # proxmox_node_name    = "pve"
 # template_vm_id       = 9000
 # ssh_public_key_path  = "C:/Users/dupon/.ssh/id_ed25519.pub"

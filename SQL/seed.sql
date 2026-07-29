@@ -2,7 +2,7 @@
 -- plus later additions (k3s-master01, postgres) confirmed via README.md.
 
 INSERT INTO hosts (name, ip_address, vmid, vcpu, ram_gb, disk_gb, role, status) VALUES
-    ('proxmox',      '192.168.1.209', NULL, NULL, 32, NULL, 'hypervisor', 'running'),
+    ('proxmox',      '192.168.1.10',  NULL, NULL, 32, NULL, 'hypervisor', 'running'),
     ('automation01', '192.168.1.20',  101,  4,    8,  80,   'automation', 'running'),
     ('truenas01',    '192.168.1.40',  200,  4,    8,  32,   'storage',    'running'),
     ('plex01',       '192.168.1.50',  102,  2,    4,  40,   'media',      'running'),

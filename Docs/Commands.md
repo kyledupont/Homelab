@@ -186,4 +186,4 @@ ssh kyle@192.168.1.20   # automation01
 ssh kyle@192.168.1.50   # plex01
 ```
 
-TrueNAS (`192.168.1.40`) and Proxmox (`192.168.1.209`) are managed via their web UIs rather than routine SSH.
+TrueNAS (`192.168.1.40`) and Proxmox (`192.168.1.10`) are managed via their web UIs rather than routine SSH.

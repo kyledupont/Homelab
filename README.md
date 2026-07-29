@@ -160,7 +160,7 @@ Static IPs (see [Docs/Network.md](Docs/Network.md) for full detail)
 
 | Device | Address |
 |---------|---------|
-| Proxmox | 192.168.1.209 |
+| Proxmox | 192.168.1.10 |
 | automation01 | 192.168.1.20 |
 | truenas01 | 192.168.1.40 |
 | plex01 | 192.168.1.50 |

@@ -1,0 +1,38 @@
+name: Deploy Docker Compose stacks
+
+# Covers the stacks on automation01 that are plain Docker Compose (no Ansible
+# templating/secrets needed): Automation (n8n, Portainer, Uptime Kuma,
+# Homepage), MCP, and Pi-hole. Postgres and Plex stay on the Ansible pipeline
+# (deploy-ansible.yml) since they need vault-decrypted secrets and/or SSH to
+# plex01.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Docker/Automation/**"
+      - "Docker/MCP/**"
+      - "Docker/Pihole/**"
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    # Self-hosted runner on automation01 itself — see Docs/Ansible.md for why
+    # this runner exists and the security note on never adding a
+    # pull_request trigger to anything targeting it.
+    runs-on: [self-hosted, automation01]
+
+    steps:
+      - name: Pull latest into the persistent checkout (~/homelab)
+        run: git -C /home/kyle/homelab pull
+
+      - name: Redeploy Automation stack (n8n, Portainer, Uptime Kuma, Homepage)
+        working-directory: /home/kyle/homelab/Docker/Automation
+        run: docker compose up -d
+
+      - name: Redeploy MCP stack
+        working-directory: /home/kyle/homelab/Docker/MCP
+        run: docker compose up -d
+
+      - name: Redeploy Pi-hole
+        working-directory: /home/kyle/homelab/Docker/Pihole
+        run: docker compose up -d

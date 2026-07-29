@@ -8,15 +8,26 @@ A running cheat sheet of commands used repeatedly across this lab, with enough c
 
 **Context**: edits made in this repo on the Windows dev machine do nothing on any VM until they're committed *and* pushed to GitHub — `git pull` on a VM fetches from the GitHub remote, not from this machine. This caused real confusion more than once (Homepage not starting, config changes not appearing) before the full chain was nailed down.
 
+**Automated as of 2026-07-29** for the stacks that live on automation01 — pushing to `main` is enough, no SSH needed:
+- `Docker/Automation/**`, `Docker/MCP/**`, `Docker/Pihole/**` → [`.github/workflows/deploy-docker.yml`](../.github/workflows/deploy-docker.yml)
+- `Ansible/**` (Postgres, Plex) → [`.github/workflows/deploy-ansible.yml`](../.github/workflows/deploy-ansible.yml)
+
+Both run on the self-hosted runner on automation01, and both start by running `git -C /home/kyle/homelab pull` before touching any containers — that persistent clone (separate from the runner's own per-job checkout) is what every `docker compose`/Ansible command actually acts on, so it has to be current first.
+
 ```bash
 # On the Windows dev machine: commit + push (now done by the user, not asked each time)
 git add <files>
 git commit -m "..."
 git push
+# GitHub Actions takes it from here for the paths above
+```
 
-# On the target VM: pull + redeploy
+Manual fallback (anything outside those paths, or if the runner's down):
+
+```bash
+ssh kyle@192.168.1.20
 cd ~/homelab && git pull
-cd Docker/<Automation|Media>
+cd Docker/<stack>
 docker compose up -d
 ```
 

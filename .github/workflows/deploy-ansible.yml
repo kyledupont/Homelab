@@ -20,6 +20,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Pull latest into the persistent checkout (~/homelab)
+        # The playbooks below act on absolute paths under /home/kyle/homelab
+        # (postgres_compose_dir, etc.) — a separate, manually-managed clone
+        # from this job's own ephemeral checkout above. Without this step,
+        # deploys silently run against whatever was last pulled there by hand.
+        run: git -C /home/kyle/homelab pull
+
       - name: Run deploy_postgres playbook
         working-directory: Ansible
         run: >

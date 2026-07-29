@@ -2,3 +2,8 @@ title: Kyle's Homelab
 theme: dark
 color: slate
 headerStyle: clean
+
+layout:
+  Developer:
+    style: row
+    columns: 3

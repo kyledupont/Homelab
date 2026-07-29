@@ -21,6 +21,10 @@
         href: http://192.168.1.20:3001
         description: Uptime monitoring
         icon: uptime-kuma.png
+    - Pi-hole:
+        href: http://192.168.1.20:8081/admin
+        description: Network-wide DNS + ad blocking
+        icon: pi-hole.png
 
 - Media:
     - Plex:

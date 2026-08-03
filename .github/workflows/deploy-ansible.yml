@@ -6,6 +6,11 @@ on:
     paths:
       - "Ansible/**"
   workflow_dispatch:
+  # Fired by Class-Compass's own trigger-deploy.yml on every push to its
+  # master -- that repo has no deploy automation of its own, so this is the
+  # only thing that gets a content/data change from GitHub onto classcompass01.
+  repository_dispatch:
+    types: [classcompass-deploy]
 
 jobs:
   deploy:

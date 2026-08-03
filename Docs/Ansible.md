@@ -122,6 +122,11 @@ Or automatically — see below.
 
 **Status: wired up 2026-07-23, extended 2026-08-03.** [`.github/workflows/deploy-ansible.yml`](../.github/workflows/deploy-ansible.yml) runs `deploy_postgres.yml`, `deploy_plex.yml`, `bootstrap_docker.yml`, and `deploy_classcompass.yml` (in sequence, one job) on every push to `main` that touches `Ansible/**` (plus a manual `workflow_dispatch` trigger). All playbooks are idempotent, so running one even when only another actually changed is a harmless no-op rather than something worth conditionally skipping — not worth the added complexity of path-based job selection at this scale.
 
+**Also fires on `repository_dispatch` (added 2026-08-03).** Class-Compass is a separate repo with no deploy automation of its own — a push there just sits on GitHub until something tells `classcompass01` to `git pull`. Its own `.github/workflows/trigger-deploy.yml` fires a `repository_dispatch` (`event_type: classcompass-deploy`) into this repo on every push to its `master`, which lands here and re-runs the same four-playbook job as any other trigger. One-time manual setup (GitHub Actions secrets aren't something Ansible or Terraform manages):
+
+1. Generate a token scoped to **this repo only** — a fine-grained PAT (Settings → Developer settings → Fine-grained tokens) with access restricted to `kyledupont/Homelab` and repository permission **Contents: Read and write** (that's what `repository_dispatch` needs) is tighter than a classic `repo`-scoped token and worth the extra couple clicks.
+2. Add it as a secret named `HOMELAB_DISPATCH_TOKEN` on the **Class-Compass** repo (Settings → Secrets and variables → Actions) — not here. Whoever holds this token can trigger a Homelab deploy, so treat it like any other deploy credential.
+
 **Runner: self-hosted on automation01 itself, not a GitHub-hosted runner.** Two reasons:
 - automation01 is the Ansible control node already (see above) — a hosted runner has no route into the homelab LAN without a VPN/tunnel.
 - The workflow reuses the vault password file that's already on disk at `/home/kyle/homelab/Ansible/.vault_pass` (`--vault-password-file` points at that absolute path directly), rather than duplicating the vault secret into GitHub Actions secrets. Same "the key that unlocks the vault never leaves automation01" principle as the manual-run setup.
@@ -129,6 +134,8 @@ Or automatically — see below.
 Installed as a systemd service (`actions-runner/svc.sh install kyle` → `actions.runner.Dup0n7-Homelab.automation01.service`, enabled + running), so it survives reboots and doesn't need a logged-in session.
 
 **Security note — this repo is public.** Registering a self-hosted runner on a public repo triggers a GitHub warning: a fork's pull request could otherwise get arbitrary code executed on the runner (which runs as `kyle`, who has `sudo`/`docker` group membership and LAN access). Mitigated by keeping the trigger to `push: branches: [main]` only — **never add a `pull_request` or `pull_request_target` trigger to any workflow that targets this runner**, since a fork PR can't push to `main` and there are no other collaborators on this repo. If that ever changes (a collaborator gets push access, or a PR-triggered workflow gets added), this needs re-hardening — e.g. a dedicated low-privilege service account instead of `kyle`, off the `sudo`/`docker` groups.
+
+`repository_dispatch` doesn't reopen this hole — unlike `pull_request`, GitHub only delivers it in response to an authenticated API call from a token with write access to this repo (`HOMELAB_DISPATCH_TOKEN`, held by Class-Compass), not something an anonymous fork can trigger.
 
 ### Runner internals: where it lives, how to watch it
 

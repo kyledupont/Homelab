@@ -62,7 +62,7 @@
       ansible.builtin.git:
         repo: git@github.com:kyledupont/Class-Compass.git
         dest: "{{ classcompass_repo_dir }}"
-        version: main
+        version: master
         key_file: ~/.ssh/classcompass_deploy_ed25519
         accept_hostkey: true
       register: git_result

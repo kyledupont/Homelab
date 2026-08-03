@@ -5,7 +5,7 @@ classcompass_repo_dir: /home/kyle/class-compass
 # for the secret halves.
 warcraftlogs_client_id: ""
 battlenet_client_id: "f9dd22ddf290432dabaf6c36869a38a4"
-# Cloudflare's published "always passes" Turnstile test key -- swap for a real
-# site key (dash.cloudflare.com -> Turnstile) once classcompass.io is live.
-turnstile_site_key: "1x00000000000000000000AA"
+# Real Turnstile site for classcompass.io, added 2026-08-03 (was the published
+# "always passes" test key before this).
+turnstile_site_key: "0x4AAAAAAEFS4T8-N2nOPLaG"
 adsense_client_id: "ca-pub-6215228957374352"

@@ -19,6 +19,8 @@ Static IPs should also get a DHCP reservation/exclusion set on the router to pre
 | automation01 | `192.168.1.20` | Docker host — n8n, Portainer, Uptime Kuma |
 | truenas01 | `192.168.1.40` | TrueNAS SCALE (Community Edition) — ZFS storage |
 | plex01 | `192.168.1.50` | Docker host — Plex, Portainer Agent |
+| k3s-master01 | `192.168.1.60` | Single-node K3s |
+| classcompass01 | `192.168.1.21` | Docker host — class-compass (own repo), Cloudflare Tunnel, Portainer Agent. Split off onto its own VM rather than automation01 specifically to serve classcompass.io publicly (Cloudflare Tunnel, outbound-only) without widening automation01's attack surface — same reasoning as plex01. |
 | dc01 | Not yet built | Reserved: `192.168.1.30` (Windows Server / AD, per original plan) |
 
 ## Remote access
@@ -26,6 +28,8 @@ Static IPs should also get a DHCP reservation/exclusion set on the router to pre
 Not yet configured. Original plan calls for Tailscale for general remote access to the lab, rather than exposing services directly to the internet.
 
 **`plex01` is the deliberate exception.** It's kept on its own VM specifically so it can eventually be exposed to the internet — sharing with people outside the household — without widening `automation01`'s attack surface, since `automation01` holds the Ansible SSH keys, the GitHub Actions runner, and the rest of the control-plane tooling. Not yet exposed; when it happens, options under consideration are Plex's own built-in Remote Access, Tailscale Funnel, or a reverse proxy + own domain (the last one is more work but better practice for the Reverse Proxy/SSL goals elsewhere in this repo).
+
+**`classcompass01` is a second, already-implemented exception** (2026-08-03) — same reasoning as `plex01` (its own VM, `automation01` stays untouched), but a different exposure mechanism: **Cloudflare Tunnel** rather than a self-hosted reverse proxy + router port-forward. `cloudflared` (part of `class-compass`'s own `docker-compose.yml`, that repo is intentionally separate from this one) makes an outbound-only connection to Cloudflare, which handles public DNS and TLS termination for `classcompass.io` from its own dashboard — zero inbound ports opened anywhere, not on the router, not on `classcompass01`, not on `automation01`. Chosen over Caddy/DDNS/port-forwarding specifically because this project isn't one of this repo's own documented goals, so it defers to Cloudflare for what it already does well rather than forcing in more self-hosted infrastructure. See `class-compass`'s own `Docs/Deployment.md` for the app-side details.
 
 ## Pi-hole (internal DNS + ad blocking)
 

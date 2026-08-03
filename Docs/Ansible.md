@@ -4,7 +4,7 @@
 
 Second step of the "Infrastructure as Code" phase (Terraform provisions → **Ansible configures** → Kubernetes orchestrates — see [Terraform.md](Terraform.md)). Also directly job-market relevant, same reasoning as Terraform/Vault: Ansible is a core platform/IAM-engineering skill, and it's specifically strong in exactly the kind of on-prem/config-management work this lab targets.
 
-Status: **First playbook applied and verified 2026-07-23** — PostgreSQL deployed on `automation01`, storing its data on `truenas01` (NFS) rather than local disk, connected to and queried for real (`PostgreSQL 17.10`). **Widened to a second, cross-host target same day** — `plex01` brought under management over real SSH (see "Cross-host management" below).
+Status: **First playbook applied and verified 2026-07-23** — PostgreSQL deployed on `automation01`, storing its data on `truenas01` (NFS) rather than local disk, connected to and queried for real (`PostgreSQL 17.10`). **Widened to a second, cross-host target same day** — `plex01` brought under management over real SSH (see "Cross-host management" below). **Widened to a third target 2026-08-03** — `classcompass01`, see "Third target: classcompass01" below.
 
 ## Where Ansible runs: automation01, not the Windows workstation
 
@@ -16,9 +16,9 @@ Unlike Terraform (a self-contained Go binary with a native Windows build), **Ans
 
 Installed via `sudo apt-get install -y ansible` → `ansible [core 2.16.3]` (Ubuntu 24.04's package).
 
-## Inventory: automation01 (local) + plex01 (SSH)
+## Inventory: automation01 (local) + plex01 + classcompass01 (SSH)
 
-[`Ansible/inventory.ini`](../Ansible/inventory.ini) has two hosts in `docker_hosts`: `automation01` (`ansible_connection=local` — manages the host it's running on directly) and `plex01` (real SSH, `192.168.1.50`).
+[`Ansible/inventory.ini`](../Ansible/inventory.ini) has three hosts in `docker_hosts`: `automation01` (`ansible_connection=local` — manages the host it's running on directly), `plex01` (real SSH, `192.168.1.50`), and `classcompass01` (real SSH, `192.168.1.21`).
 
 ## Cross-host management: a dedicated SSH keypair for automation01
 
@@ -77,6 +77,37 @@ Verified end-to-end, not just "container exists": connected via `docker exec pos
 
 First run confirmed idempotent against the live host: `docker ps` showed both containers with unchanged uptime (`Up 7 days`) after the playbook ran — nothing was recreated, Ansible just confirmed everything already matched the desired state.
 
+## Third target: classcompass01 (2026-08-03)
+
+Two new playbooks, both targeting `classcompass01` (`192.168.1.21`):
+
+- **`bootstrap_docker.yml`** — new work, not copying an existing pattern. Every playbook up to this
+  point explicitly assumed Docker was already installed ("this playbook does not install Docker...
+  assumes Docker already exists, which it does on every host in this lab" — true for `automation01`/
+  `plex01` because they were hand-set-up before Ansible existed, but `classcompass01` wasn't). This
+  playbook installs Docker Engine + the Compose plugin from Docker's own apt repo (not Ubuntu's
+  `docker.io` package, which lags upstream) and runs before `deploy_classcompass.yml`.
+- **`deploy_classcompass.yml`** — same shape as `deploy_plex.yml`, with two differences: the app's repo
+  (`github.com/kyledupont/Class-Compass`, deliberately kept separate from this one — see that repo's own
+  `Docs/Deployment.md`) is cloned/pulled at deploy time rather than already living under `Docker/<service>/`
+  here; and since it's a *private* repo, the playbook generates a dedicated read-only deploy key on
+  `classcompass01` the first time it runs (`~/.ssh/classcompass_deploy_ed25519` — same "keypair scoped to
+  exactly this purpose" pattern as `automation01`'s own `ansible_ed25519` key). The public half needs
+  adding to the class-compass repo's **Settings → Deploy keys** (read-only) on GitHub — one-time manual
+  step, the playbook prints it via `ansible.builtin.debug` on first run so it's easy to grab from the
+  Actions log.
+
+`.env` is rendered from `Ansible/templates/classcompass.env.j2` — vault-encrypted secrets live in
+`Ansible/host_vars/classcompass01/vault.yml` (same `ansible-vault encrypt_string` pattern as Postgres's
+password), non-secret values (public API client IDs, the AdSense publisher ID, the Turnstile site key) in
+`Ansible/host_vars/classcompass01/vars.yml`. One value there, `vault_cloudflare_tunnel_token`, is currently
+a placeholder — re-encrypt it with the real token once the Cloudflare Tunnel is created (Zero Trust →
+Networks → Tunnels on Cloudflare's dashboard), same workflow as every other secret here.
+
+No NFS mount needed here (unlike Postgres/Plex) — the app's only persistent state is in Postgres, which
+stays on `automation01`'s shared container; `classcompass01` just makes a LAN-only client connection to
+it, no change to `automation01`'s own exposure.
+
 ## Running it
 
 Manually, from `automation01` (SSH in, or however you're driving it):
@@ -89,7 +120,7 @@ Or automatically — see below.
 
 ## Automatic deploys via GitHub Actions
 
-**Status: wired up 2026-07-23.** [`.github/workflows/deploy-ansible.yml`](../.github/workflows/deploy-ansible.yml) runs both `deploy_postgres.yml` and `deploy_plex.yml` (in sequence, one job) on every push to `main` that touches `Ansible/**` (plus a manual `workflow_dispatch` trigger). Both playbooks are idempotent, so running the Postgres one even when only the Plex playbook actually changed (or vice versa) is a harmless no-op rather than something worth conditionally skipping — not worth the added complexity of path-based job selection at this scale (two playbooks).
+**Status: wired up 2026-07-23, extended 2026-08-03.** [`.github/workflows/deploy-ansible.yml`](../.github/workflows/deploy-ansible.yml) runs `deploy_postgres.yml`, `deploy_plex.yml`, `bootstrap_docker.yml`, and `deploy_classcompass.yml` (in sequence, one job) on every push to `main` that touches `Ansible/**` (plus a manual `workflow_dispatch` trigger). All playbooks are idempotent, so running one even when only another actually changed is a harmless no-op rather than something worth conditionally skipping — not worth the added complexity of path-based job selection at this scale.
 
 **Runner: self-hosted on automation01 itself, not a GitHub-hosted runner.** Two reasons:
 - automation01 is the Ansible control node already (see above) — a hosted runner has no route into the homelab LAN without a VPN/tunnel.

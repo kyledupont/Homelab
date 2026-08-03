@@ -1,0 +1,11 @@
+classcompass_repo_dir: /home/kyle/class-compass
+
+# Non-secret halves of the class-compass .env -- see
+# Ansible/templates/classcompass.env.j2 and host_vars/classcompass01/vault.yml
+# for the secret halves.
+warcraftlogs_client_id: ""
+battlenet_client_id: "f9dd22ddf290432dabaf6c36869a38a4"
+# Cloudflare's published "always passes" Turnstile test key -- swap for a real
+# site key (dash.cloudflare.com -> Turnstile) once classcompass.io is live.
+turnstile_site_key: "1x00000000000000000000AA"
+adsense_client_id: "ca-pub-6215228957374352"

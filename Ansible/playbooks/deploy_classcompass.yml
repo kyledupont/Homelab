@@ -1,0 +1,81 @@
+---
+# Deploys the class-compass app (separate repo: github.com/kyledupont/Class-Compass,
+# private) to its own dedicated host rather than automation01 - see
+# Terraform/proxmox/classcompass01.tf for why. Shape mirrors deploy_plex.yml /
+# deploy_postgres.yml: confirm Docker, render .env from Ansible Vault, docker
+# compose up. Two things new here versus those two:
+# - The repo itself lives outside this one, so it's cloned/pulled at deploy
+#   time rather than already present via Docker/<service>/docker-compose.yml.
+# - class-compass is a *private* GitHub repo, so this generates a dedicated
+#   read-only deploy key on classcompass01 the first time it runs (same
+#   "generate a keypair scoped to exactly this purpose" pattern as
+#   automation01's own ansible_ed25519 key) - see Docs/Ansible.md "Cross-host
+#   management" for the precedent. The public half needs adding to the repo's
+#   Settings -> Deploy keys (read-only) on GitHub - one-time manual step.
+- name: Deploy class-compass on classcompass01
+  hosts: classcompass01
+  become: false
+
+  tasks:
+    - name: Confirm Docker is present (see bootstrap_docker.yml)
+      ansible.builtin.command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: Show Docker version found
+      ansible.builtin.debug:
+        msg: "{{ docker_version.stdout }}"
+
+    - name: Ensure git is installed
+      ansible.builtin.apt:
+        name: git
+        state: present
+      become: true
+
+    - name: Check for an existing deploy key
+      ansible.builtin.stat:
+        path: ~/.ssh/classcompass_deploy_ed25519
+      register: deploy_key
+
+    - name: Generate a dedicated read-only deploy key for the class-compass repo
+      ansible.builtin.command: >-
+        ssh-keygen -t ed25519 -f ~/.ssh/classcompass_deploy_ed25519 -N ''
+        -C 'classcompass01-deploy-key'
+      when: not deploy_key.stat.exists
+
+    - name: Read the deploy key's public half
+      ansible.builtin.command: cat ~/.ssh/classcompass_deploy_ed25519.pub
+      register: deploy_pubkey
+      changed_when: false
+
+    - name: Show the deploy key public half (add as a read-only Deploy Key on GitHub if not already added)
+      ansible.builtin.debug:
+        msg: "{{ deploy_pubkey.stdout }}"
+
+    - name: Ensure github.com's host key is trusted (SSH clone would otherwise hang on first connection)
+      ansible.builtin.known_hosts:
+        name: github.com
+        key: "{{ lookup('ansible.builtin.pipe', 'ssh-keyscan -t ed25519 github.com') }}"
+        state: present
+
+    - name: Clone or update the class-compass repo
+      ansible.builtin.git:
+        repo: git@github.com:kyledupont/Class-Compass.git
+        dest: "{{ classcompass_repo_dir }}"
+        version: main
+        key_file: ~/.ssh/classcompass_deploy_ed25519
+        accept_hostkey: true
+      register: git_result
+
+    - name: Render class-compass .env from vault-encrypted secrets
+      ansible.builtin.template:
+        src: ../templates/classcompass.env.j2
+        dest: "{{ classcompass_repo_dir }}/.env"
+        mode: "0600"
+
+    - name: Build and start the class-compass stack via Docker Compose
+      ansible.builtin.command: docker compose up -d --build
+      args:
+        chdir: "{{ classcompass_repo_dir }}"
+      register: compose_result
+      changed_when: "'Started' in compose_result.stderr or 'Created' in compose_result.stderr or 'Running' in compose_result.stderr"

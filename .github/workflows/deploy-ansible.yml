@@ -36,3 +36,13 @@ jobs:
       - name: Run deploy_plex playbook
         working-directory: Ansible
         run: ansible-playbook playbooks/deploy_plex.yml
+
+      - name: Run bootstrap_docker playbook (classcompass01)
+        working-directory: Ansible
+        run: ansible-playbook playbooks/bootstrap_docker.yml
+
+      - name: Run deploy_classcompass playbook
+        working-directory: Ansible
+        run: >
+          ansible-playbook playbooks/deploy_classcompass.yml
+          --vault-password-file /home/kyle/homelab/Ansible/.vault_pass

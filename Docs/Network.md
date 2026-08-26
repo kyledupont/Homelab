@@ -16,7 +16,7 @@ Static IPs should also get a DHCP reservation/exclusion set on the router to pre
 | Host | IP | Role |
 |---|---|---|
 | Proxmox | `192.168.1.10` | Hypervisor host |
-| automation01 | `192.168.1.20` | Docker host — n8n, Portainer, Uptime Kuma |
+| automation01 | `192.168.1.20` | Docker host — n8n, Postgres, Portainer, Uptime Kuma, Homepage, Pi-hole, Grafana, Prometheus, Node Exporter, mcp-uptime-kuma, mcp-n8n — see README.md "Docker Services" for the current, authoritative list |
 | truenas01 | `192.168.1.40` | TrueNAS SCALE (Community Edition) — ZFS storage |
 | plex01 | `192.168.1.50` | Docker host — Plex, Portainer Agent |
 | k3s-master01 | `192.168.1.60` | Single-node K3s |

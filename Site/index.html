@@ -324,7 +324,7 @@
       <div class="bastion-ip"><code>192.168.1.20</code> — the one machine everything else routes through</div>
       <div class="roles">
         <div class="role role-docker">
-          <span class="n">Docker host — 8 containers</span>
+          <span class="n">Docker host — 11 containers</span>
           <ul class="svc-list">
             <li><b>n8n</b> — workflow automation</li>
             <li><b>Postgres</b> — SQL Database</li>
@@ -332,6 +332,9 @@
             <li><b>Uptime Kuma</b> — uptime monitoring across every service</li>
             <li><b>Homepage</b> — single-pane dashboard linking everything</li>
             <li><b>Pi-hole</b> — network-wide DNS + ad blocking</li>
+            <li><b>Grafana</b> — dashboards, Prometheus pre-wired as its datasource</li>
+            <li><b>Prometheus</b> — scrapes itself + Node Exporter every 15s</li>
+            <li><b>Node Exporter</b> — host-level metrics (CPU/mem/disk/net)</li>
             <li><b>mcp-uptime-kuma</b> — custom MCP server, exposes Uptime Kuma to Claude</li>
             <li><b>mcp-n8n</b> — community MCP server, gives Claude n8n workflow access</li>
           </ul>

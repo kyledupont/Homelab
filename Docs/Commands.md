@@ -10,7 +10,7 @@ A running cheat sheet of commands used repeatedly across this lab, with enough c
 
 **Automated as of 2026-07-29** for the stacks that live on automation01 — pushing to `main` is enough, no SSH needed:
 - `Docker/Automation/**`, `Docker/MCP/**`, `Docker/Pihole/**` → [`.github/workflows/deploy-docker.yml`](../.github/workflows/deploy-docker.yml)
-- `Ansible/**` (Postgres, Plex) → [`.github/workflows/deploy-ansible.yml`](../.github/workflows/deploy-ansible.yml)
+- `Ansible/**` (Postgres, Plex, Monitoring) → [`.github/workflows/deploy-ansible.yml`](../.github/workflows/deploy-ansible.yml)
 
 Both run on the self-hosted runner on automation01, and both start by running `git -C /home/kyle/homelab pull` before touching any containers — that persistent clone (separate from the runner's own per-job checkout) is what every `docker compose`/Ansible command actually acts on, so it has to be current first.
 
@@ -31,7 +31,7 @@ cd Docker/<stack>
 docker compose up -d
 ```
 
-`docker compose up -d` only recreates containers whose config actually changed (image, env vars, volumes, etc.) — safe to run even if nothing changed.
+`docker compose up -d` only recreates containers whose compose-file config actually changed (image tag, env vars, port/volume *mappings*, etc.) — safe to run even if nothing changed. **It does NOT detect edits to the contents of a bind-mounted file** (e.g. Homepage's `services.yaml`/`bookmarks.yaml`) — the mount mapping itself is unchanged, so compose sees no diff and won't restart the container. Confirmed 2026-08-25 adding Grafana/Prometheus to Homepage's bookmarks: `docker compose up -d` (via `deploy-docker.yml`) left the old bookmarks running until a manual `docker compose restart homepage`.
 
 ---
 

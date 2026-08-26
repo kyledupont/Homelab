@@ -145,14 +145,10 @@ See **[my portfolio](https://kyledupont.github.io/)** for the professional front
 
 - Terraform — automation01 imported and under Terraform management 2026-07-22; plex01 imported and k3s-master01 created 2026-07-24, see [Docs/Terraform.md](Docs/Terraform.md)
 - Ansible — first playbook applied 2026-07-23 (PostgreSQL, `automation01`); widened same day to a second host, `plex01`, over a dedicated SSH keypair — see [Docs/Ansible.md](Docs/Ansible.md)
-- GitHub Actions — self-hosted runner on automation01 auto-deploys Ansible playbooks on push to `main`, 2026-07-23, see [Docs/Ansible.md](Docs/Ansible.md)
+- GitHub Actions — self-hosted runner on automation01 auto-deploys Ansible playbooks on push to `main`, 2026-07-23, see [Docs/Ansible.md](Docs/Ansible.md); a second workflow (`deploy-docker.yml`, 2026-07-29) auto-runs `docker compose up -d` for the plain-Compose stacks (Automation, MCP, Pi-hole) that don't need Ansible templating/vault secrets — see [Docs/Commands.md](Docs/Commands.md). Note: neither workflow restarts a container over a bind-mounted config file's *content* changing (only compose-file-level config changes trigger a recreate) — see [Docs/LessonsLearned.md](Docs/LessonsLearned.md) 2026-08-25.
 - Kubernetes (K3s) — single-node cluster on `k3s-master01`, provisioned via Terraform + bootstrapped via Ansible, 2026-07-24, see [Docs/Kubernetes.md](Docs/Kubernetes.md)
 - GitHub Pages — publishes the live [system map](https://kyledupont.github.io/Homelab/) (`Site/index.html`) automatically on every push that touches it, via `.github/workflows/deploy-pages.yml` on a GitHub-hosted runner (not automation01's — this job never touches the homelab network), 2026-07-24
 - GitHub Pages, portfolio — [kyledupont.github.io](https://kyledupont.github.io/) is a separate repo (a GitHub *user site*, so it serves at the bare domain with no `/Homelab` in the URL), plain HTML/CSS/JS with no build step — GitHub Pages serves the repo root directly, no Action needed, 2026-07-24. See [Docs/Portfolio.md](Docs/Portfolio.md).
-
-Planned
-
-- Docker Compose
 
 ---
 
@@ -240,7 +236,7 @@ Static IPs (see [Docs/Network.md](Docs/Network.md) for full detail)
 - AI Automation
 - Backup Automation
 - Public-facing custom MCP server (internet-exposed) — see [Docs/AI.md](Docs/AI.md)
-- Auto-deploy for non-Ansible config changes (e.g. Homepage) — mirrors the Ansible self-hosted-runner pattern; currently these need a manual `git pull` on `automation01` rather than deploying automatically on push
+- Auto-restart on bind-mounted config-only changes (e.g. Homepage's `services.yaml`) — `deploy-docker.yml` (2026-07-29) already auto-pulls and runs `docker compose up -d` on push, but that alone doesn't restart a container when only a mounted file's *contents* changed, not the compose file itself; still needs a manual `docker compose restart <service>` today, see [Docs/LessonsLearned.md](Docs/LessonsLearned.md) 2026-08-25
 
 ---
 

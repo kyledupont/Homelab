@@ -89,4 +89,4 @@ ansible-playbook -i inventory.ini playbooks/install_k3s.yml
 - [ ] Exercise Traefik (K3s's bundled default Ingress controller, already installed and running in `kube-system` — confirmed during setup) instead of `NodePort` — real hostname-based routing rather than a raw port.
 - [ ] Persistent storage: no `StorageClass` beyond K3s's default `local-path` provisioner has been exercised yet. Would need an NFS-backed option (matching the `tank/postgres`/`tank/media` pattern) for anything stateful.
 - [ ] Add `k3s-worker01` if/when RAM headroom allows — the naming convention and join mechanism are already known, just not needed yet at this scale.
-- [ ] No monitoring on the cluster itself yet (ties into the still-not-started Grafana/Prometheus/Loki stack from the broader roadmap).
+- [ ] No monitoring on the cluster itself yet — Grafana/Prometheus/Node Exporter are running on `automation01` as of 2026-08-25 (see [Architecture.md](Architecture.md)), but nothing scrapes `k3s-master01`; would need `node-exporter` on that host too and/or a Kubernetes-native option (kube-state-metrics) added as a Prometheus scrape target. Loki still not started either way.

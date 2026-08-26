@@ -8,7 +8,14 @@ scrape_configs:
 
   # node-exporter runs with network_mode: host (see docker-compose.yml), so
   # it isn't reachable by service name on the compose network - scrape it
-  # via automation01's own LAN IP instead.
+  # via each host's own LAN IP instead. plex01 runs the same Docker-based
+  # node-exporter as automation01; k3s-master01 has no Docker daemon (k3s
+  # bundles its own containerd), so it runs node_exporter as a native
+  # systemd service instead (see deploy_node_exporter_k3s.yml) - same
+  # port, same metrics, different deployment mechanism.
   - job_name: node-exporter
     static_configs:
-      - targets: ["192.168.1.20:9100"]
+      - targets:
+          - "192.168.1.20:9100" # automation01
+          - "192.168.1.50:9100" # plex01
+          - "192.168.1.60:9100" # k3s-master01

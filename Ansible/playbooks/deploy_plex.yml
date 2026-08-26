@@ -9,6 +9,17 @@
   become: false
 
   tasks:
+    - name: Pull latest into plex01's own checkout
+      # Unlike automation01 (whose checkout the CI runner already pulls
+      # before this playbook even starts), plex01 is a separate remote
+      # host with its own independent clone - nothing pulled it until this
+      # task existed. Found 2026-08-25: plex01's checkout had been stuck on
+      # a commit from the very first week, silently, since no Docker
+      # Compose change had touched Docker/Media/ since then to expose it.
+      ansible.builtin.command: git -C /home/kyle/homelab pull
+      register: plex_pull
+      changed_when: "'Already up to date' not in plex_pull.stdout"
+
     - name: Confirm Docker is present (this playbook does not install Docker)
       ansible.builtin.command: docker --version
       register: docker_version

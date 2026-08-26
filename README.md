@@ -89,7 +89,8 @@ See **[my portfolio](https://kyledupont.github.io/)** for the professional front
 - Obsidian (testing) — vault at `S:\Obsidian\Dupontke`, `Homelab/Repo-Docs` auto-mirrored from this repo via git post-commit hook, see [Docs/Obsidian.md](Docs/Obsidian.md)
 - PostgreSQL (automation01) — v17, deployed via the first real Ansible playbook 2026-07-23, see [Docs/Ansible.md](Docs/Ansible.md); real homelab-inventory schema + indexing/EXPLAIN ANALYZE/row-locking exercises run live 2026-07-28, see [Docs/SQL.md](Docs/SQL.md)
 - Pi-hole (automation01) — network-wide DNS + ad blocking, deployed 2026-07-28; ad blocking confirmed actually working (verified via query log + a known ad domain resolving to `0.0.0.0`) after manually pointing one PC's DNS at it. Router-wide DHCP still not pointed at it, so not yet network-wide — see [Docs/Network.md](Docs/Network.md).
-- Grafana + Prometheus + Node Exporter (automation01) — deployed via Ansible 2026-08-25, admin password from Ansible Vault; Prometheus auto-provisioned as a Grafana datasource via file-based config. Node Exporter runs with `network_mode: host` for accurate host-level metrics. See [Docs/Architecture.md](Docs/Architecture.md).
+- Grafana + Prometheus (automation01) — deployed via Ansible 2026-08-25, admin password from Ansible Vault; Prometheus auto-provisioned as a Grafana datasource via file-based config, plus a hand-built "Homelab Overview" dashboard (also provisioned as code) with a per-host picker for CPU/memory/disk/uptime and all-hosts trend graphs. See [Docs/Architecture.md](Docs/Architecture.md).
+- Node Exporter — running on `automation01` and `plex01` (Docker, `network_mode: host` for accurate host-level metrics) and natively as a systemd service on `k3s-master01` (no Docker daemon there — see [Docs/Kubernetes.md](Docs/Kubernetes.md)). All three scraped by Prometheus above.
 
 ## Planned
 
@@ -202,7 +203,7 @@ Static IPs (see [Docs/Network.md](Docs/Network.md) for full detail)
 
 ## Planned
 
-- [x] Grafana / Prometheus / Node Exporter monitoring stack — deployed via Ansible 2026-08-25, see [Docs/Architecture.md](Docs/Architecture.md); Loki still pending
+- [x] Grafana / Prometheus / Node Exporter monitoring stack — deployed via Ansible 2026-08-25, see [Docs/Architecture.md](Docs/Architecture.md); widened same day to scrape all three eligible hosts (`automation01`, `plex01`, `k3s-master01`) plus a provisioned-as-code overview dashboard. `truenas01` deliberately excluded — see [Docs/Network.md](Docs/Network.md). Loki still pending.
 - [x] Terraform — provider (`bpg/proxmox`); full lifecycle proven on a disposable test VM (`tf-test01`: applied, SSH-verified, destroyed cleanly); then **`automation01` imported into Terraform state 2026-07-22** — see [Docs/Terraform.md](Docs/Terraform.md) for the full permission/import gotchas and what "Terraform-managed" now means for that VM. **`plex01` imported and applied 2026-07-24** (triggered an unplanned ~15-minute reboot — see Docs/Terraform.md "Gotchas hit").
 - [x] Ansible — runs from `automation01` (control node can't be Windows natively — see [Docs/Ansible.md](Docs/Ansible.md)); first playbook applied 2026-07-23, secrets handled via Ansible Vault, not a plaintext `.env`.
 - [x] PostgreSQL — deployed via that first Ansible playbook 2026-07-23 (v17, `automation01`), connected to and queried for real (not just a healthy-looking container) — see [Docs/Ansible.md](Docs/Ansible.md).

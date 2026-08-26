@@ -3,6 +3,16 @@ services:
     image: prom/prometheus:latest
     container_name: prometheus
     restart: unless-stopped
+    # --web.enable-lifecycle unlocks POST /-/reload, which deploy_monitoring.yml
+    # calls after every deploy - scrape-target changes in prometheus.yml (a
+    # bind mount) otherwise wouldn't be picked up without a full container
+    # restart, same class of gap as Homepage's services.yaml (see
+    # Docs/LessonsLearned.md 2026-08-25). Base args match the image's own
+    # default command (confirmed via `docker inspect`) plus this one flag.
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.enable-lifecycle"
     ports:
       - "9090:9090"
     volumes:

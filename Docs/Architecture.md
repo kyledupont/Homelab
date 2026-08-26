@@ -26,7 +26,9 @@ Proxmox VE 9.2.2 (bare metal, 192.168.1.10, 32GB RAM)
 ├── automation01 (cont.) — Docker Compose (Docker/Monitoring/), added 2026-08-25
 │   ├── grafana              :3030 — admin password from Ansible Vault; Prometheus datasource
 │   │                                 auto-provisioned via file-based config, no manual UI setup
-│   ├── prometheus           :9090 — scrapes itself + node-exporter
+│   ├── prometheus           :9090 — scrapes itself + node-exporter on all 3 eligible hosts
+│   │                                 (automation01, plex01, k3s-master01); truenas01 excluded,
+│   │                                 see Docs/Network.md "Monitoring scope"
 │   └── node-exporter        :9100 — network_mode: host (accurate host-level filesystem/network
 │                                     metrics), so it's scraped via automation01's LAN IP, not
 │                                     compose service-name DNS
@@ -39,7 +41,12 @@ Proxmox VE 9.2.2 (bare metal, 192.168.1.10, 32GB RAM)
 ├── plex01 (VMID 102) — 192.168.1.50 — 2 vCPU / 4GB RAM / 40GB disk
 │   └── Docker Compose (Docker/Media/)
 │       ├── plex             :32400 — media at /media, NFS-mounted from truenas01
-│       └── portainer_agent  :9001  — lets automation01's Portainer manage this host
+│       ├── portainer_agent  :9001  — lets automation01's Portainer manage this host
+│       └── node-exporter    :9100  — added 2026-08-25, scraped by automation01's Prometheus
+│
+├── k3s-master01 — 192.168.1.60 — single-node K3s (control-plane + worker), see Docs/Kubernetes.md
+│   └── node_exporter (native systemd service, not Docker — this host has no Docker daemon,
+│       just k3s's own bundled containerd) :9100 — added 2026-08-25
 │
 └── ubuntu-2404-cloudinit (VMID 9000, template) — reusable base for future Linux VMs
 ```

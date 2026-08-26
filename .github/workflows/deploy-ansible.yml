@@ -9,6 +9,8 @@ on:
       # dashboard/compose-only changes here still need a redeploy, and this
       # is the only playbook that manages it.
       - "Docker/Monitoring/**"
+      # deploy_plex.yml's compose dir - same reasoning as Docker/Monitoring/**
+      - "Docker/Media/**"
   workflow_dispatch:
   # Fired by Class-Compass's own trigger-deploy.yml on every push to its
   # master -- that repo has no deploy automation of its own, so this is the
@@ -51,6 +53,10 @@ jobs:
       - name: Run deploy_plex playbook
         working-directory: Ansible
         run: ansible-playbook playbooks/deploy_plex.yml
+
+      - name: Run deploy_node_exporter_k3s playbook
+        working-directory: Ansible
+        run: ansible-playbook playbooks/deploy_node_exporter_k3s.yml
 
       - name: Run bootstrap_docker playbook (classcompass01)
         working-directory: Ansible

@@ -1,0 +1,86 @@
+---
+# Installs node_exporter as a native systemd service on the k3s_hosts group
+# (currently just k3s-master01) - unlike automation01/plex01, this host has
+# no Docker daemon (k3s bundles its own containerd), so node-exporter can't
+# run as a container here the same way. Pinned to a specific release
+# rather than a floating tag (checked against GitHub's actual latest
+# release, not assumed) - same discipline as the Docker-based node-exporter
+# deploys, just doubly necessary here since a raw binary install has no
+# ":latest" convenience tag at all.
+- name: Install node_exporter on k3s hosts
+  hosts: k3s_hosts
+  become: true
+
+  vars:
+    node_exporter_version: "1.12.1"
+
+  tasks:
+    - name: Check whether this version is already installed
+      ansible.builtin.stat:
+        path: "/usr/local/bin/node_exporter-{{ node_exporter_version }}"
+      register: version_marker
+
+    - name: Download, extract, and install the pinned release
+      when: not version_marker.stat.exists
+      block:
+        - name: Download node_exporter tarball
+          ansible.builtin.get_url:
+            url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/node_exporter-{{ node_exporter_version }}.linux-amd64.tar.gz"
+            dest: "/tmp/node_exporter-{{ node_exporter_version }}.tar.gz"
+            mode: "0644"
+
+        - name: Extract node_exporter
+          ansible.builtin.unarchive:
+            src: "/tmp/node_exporter-{{ node_exporter_version }}.tar.gz"
+            dest: /tmp
+            remote_src: true
+
+        - name: Install the binary
+          ansible.builtin.copy:
+            src: "/tmp/node_exporter-{{ node_exporter_version }}.linux-amd64/node_exporter"
+            dest: /usr/local/bin/node_exporter
+            mode: "0755"
+            remote_src: true
+
+        - name: Drop a version marker (idempotency guard for this block)
+          ansible.builtin.file:
+            path: "/usr/local/bin/node_exporter-{{ node_exporter_version }}"
+            state: touch
+            mode: "0644"
+
+    - name: Create a dedicated, unprivileged system user
+      ansible.builtin.user:
+        name: node_exporter
+        system: true
+        shell: /usr/sbin/nologin
+        create_home: false
+
+    - name: Install the systemd unit
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/node_exporter.service
+        mode: "0644"
+        content: |
+          [Unit]
+          Description=Prometheus Node Exporter
+          After=network.target
+
+          [Service]
+          User=node_exporter
+          Group=node_exporter
+          ExecStart=/usr/local/bin/node_exporter
+          Restart=on-failure
+
+          [Install]
+          WantedBy=multi-user.target
+      register: unit_file
+
+    - name: Reload systemd if the unit changed
+      ansible.builtin.systemd:
+        daemon_reload: true
+      when: unit_file.changed
+
+    - name: Enable and start node_exporter
+      ansible.builtin.systemd:
+        name: node_exporter
+        enabled: true
+        state: started

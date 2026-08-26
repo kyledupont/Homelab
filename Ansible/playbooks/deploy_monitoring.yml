@@ -43,3 +43,9 @@
       until: prometheus_health.status == 200
       retries: 10
       delay: 3
+
+    - name: Reload Prometheus config (picks up scrape-target changes in the bind-mounted prometheus.yml)
+      ansible.builtin.uri:
+        url: "http://localhost:9090/-/reload"
+        method: POST
+        status_code: 200

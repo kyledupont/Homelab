@@ -352,13 +352,13 @@
         <span class="edge-label">SSH, ansible key — ongoing config</span>
         <div class="card-name" style="font-size:1rem;">plex01</div>
         <div class="card-sub"><code>192.168.1.50</code></div>
-        <ul><li>Plex, Portainer Agent</li><li>Managed via <code>deploy_plex.yml</code></li></ul>
+        <ul><li>Plex, Portainer Agent, node-exporter</li><li>Managed via <code>deploy_plex.yml</code></li></ul>
       </div>
       <div class="card">
         <span class="edge-label">SSH bootstrap + kubectl :6443 ongoing</span>
         <div class="card-name" style="font-size:1rem;">k3s-master01</div>
         <div class="card-sub"><code>192.168.1.60</code></div>
-        <ul><li>Single-node K3s cluster</li><li>Ansible only installed it once — kubectl runs it day to day</li></ul>
+        <ul><li>Single-node K3s cluster</li><li>node_exporter (native systemd — no Docker here)</li></ul>
       </div>
       <div class="card dashed">
         <span class="edge-label">NFS only — not managed</span>

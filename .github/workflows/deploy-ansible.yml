@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths:
       - "Ansible/**"
+      # deploy_monitoring.yml's compose dir - not "Ansible/**" itself, but
+      # dashboard/compose-only changes here still need a redeploy, and this
+      # is the only playbook that manages it.
+      - "Docker/Monitoring/**"
   workflow_dispatch:
   # Fired by Class-Compass's own trigger-deploy.yml on every push to its
   # master -- that repo has no deploy automation of its own, so this is the

@@ -20,6 +20,7 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
       - ./grafana-provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./grafana-provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
 
   # network_mode: host so filesystem/network-interface metrics reflect the
   # real automation01 host, not a container's isolated view. This takes it

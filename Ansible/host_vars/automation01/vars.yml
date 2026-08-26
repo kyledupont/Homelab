@@ -2,3 +2,6 @@ postgres_user: postgres
 postgres_db: postgres
 postgres_compose_dir: /home/kyle/homelab/Docker/Postgres
 postgres_nfs_mount: /mnt/postgres
+
+grafana_admin_user: admin
+monitoring_compose_dir: /home/kyle/homelab/Docker/Monitoring

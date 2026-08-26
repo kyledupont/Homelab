@@ -38,6 +38,12 @@ jobs:
           ansible-playbook playbooks/deploy_postgres.yml
           --vault-password-file /home/kyle/homelab/Ansible/.vault_pass
 
+      - name: Run deploy_monitoring playbook
+        working-directory: Ansible
+        run: >
+          ansible-playbook playbooks/deploy_monitoring.yml
+          --vault-password-file /home/kyle/homelab/Ansible/.vault_pass
+
       - name: Run deploy_plex playbook
         working-directory: Ansible
         run: ansible-playbook playbooks/deploy_plex.yml

@@ -23,6 +23,14 @@ Proxmox VE 9.2.2 (bare metal, 192.168.1.10, 32GB RAM)
 │                                     Streamable HTTP + bearer auth, gives Claude Code n8n
 │                                     node/docs/template knowledge + workflow management
 │
+├── automation01 (cont.) — Docker Compose (Docker/Monitoring/), added 2026-08-25
+│   ├── grafana              :3030 — admin password from Ansible Vault; Prometheus datasource
+│   │                                 auto-provisioned via file-based config, no manual UI setup
+│   ├── prometheus           :9090 — scrapes itself + node-exporter
+│   └── node-exporter        :9100 — network_mode: host (accurate host-level filesystem/network
+│                                     metrics), so it's scraped via automation01's LAN IP, not
+│                                     compose service-name DNS
+│
 ├── truenas01 (VMID 200) — 192.168.1.40 — 4 vCPU / 8GB RAM / 32GB boot + 2x 4TB passthrough
 │   └── TrueNAS SCALE Community Edition 25.10.4
 │       └── pool "tank" — MIRROR (WD Red 4TB + HGST Ultrastar 4TB), resilvered 2026-07-15
@@ -72,7 +80,7 @@ Net effect: a full power cycle should bring the whole lab back up unattended, in
 
 ## Not yet built (from the original roadmap)
 
-- Grafana / Prometheus / Loki / Alloy monitoring stack (Phase 3)
+- Loki / Alloy log aggregation (Grafana + Prometheus + node-exporter are running as of 2026-08-25 — see the diagram above)
 - Windows Server (`dc01`) — AD / DNS / GPO / PKI
 - Windows 11 test VM (`win11-test01`)
 - Terraform (VM provisioning as code)

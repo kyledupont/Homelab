@@ -26,6 +26,16 @@
         description: Network-wide DNS + ad blocking
         icon: pi-hole.png
 
+- Monitoring:
+    - Grafana:
+        href: http://192.168.1.20:3030
+        description: Dashboards
+        icon: grafana.png
+    - Prometheus:
+        href: http://192.168.1.20:9090
+        description: Metrics
+        icon: prometheus.png
+
 - Media:
     - Plex:
         href: http://192.168.1.50:32400/web

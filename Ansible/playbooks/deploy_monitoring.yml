@@ -1,0 +1,45 @@
+---
+# Deploys the Grafana + Prometheus + Node Exporter stack declared in
+# Docker/Monitoring/docker-compose.yml. Grafana's admin password comes from
+# Ansible Vault (same pattern as Postgres - see deploy_postgres.yml).
+# Prometheus is pre-wired as a Grafana datasource via file-based provisioning
+# (Docker/Monitoring/grafana-provisioning/), so first login already has a
+# working "Prometheus" datasource with no manual UI setup. Local Docker
+# volumes only, no NFS - same treatment as n8n/Portainer/Uptime Kuma, not
+# Postgres's durability-critical data. Auto-run on every push to main
+# touching Ansible/** via .github/workflows/deploy-ansible.yml.
+- name: Deploy monitoring stack (Grafana, Prometheus, Node Exporter) on automation01
+  hosts: automation01
+  become: false
+
+  tasks:
+    - name: Write Grafana .env from the vault-encrypted admin password
+      ansible.builtin.template:
+        src: ../templates/grafana.env.j2
+        dest: "{{ monitoring_compose_dir }}/.env"
+        mode: "0600"
+
+    - name: Start the monitoring stack via Docker Compose
+      ansible.builtin.command: docker compose up -d
+      args:
+        chdir: "{{ monitoring_compose_dir }}"
+      register: compose_result
+      changed_when: "'Started' in compose_result.stderr or 'Created' in compose_result.stderr or 'Running' in compose_result.stderr"
+
+    - name: Wait for Grafana to respond
+      ansible.builtin.uri:
+        url: "http://localhost:3030/api/health"
+        status_code: 200
+      register: grafana_health
+      until: grafana_health.status == 200
+      retries: 10
+      delay: 3
+
+    - name: Wait for Prometheus to respond
+      ansible.builtin.uri:
+        url: "http://localhost:9090/-/ready"
+        status_code: 200
+      register: prometheus_health
+      until: prometheus_health.status == 200
+      retries: 10
+      delay: 3

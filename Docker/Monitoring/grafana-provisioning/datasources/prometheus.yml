@@ -1,0 +1,12 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    # Grafana and Prometheus are in the same docker-compose.yml, so they
+    # share the default compose network and can reach each other by
+    # service name - unlike node-exporter, which uses network_mode: host.
+    url: http://prometheus:9090
+    isDefault: true
+    editable: false

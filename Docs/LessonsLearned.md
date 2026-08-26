@@ -1,5 +1,14 @@
 # Lessons Learned
 
+## 2026-08-25
+
+### Grafana + Prometheus + Node Exporter monitoring stack
+- **Verified `node-exporter`'s filesystem-exclude flag against the actual `:latest` image before writing it into the compose file**, rather than trusting a remembered/documented flag name — `docker run --rm prom/node-exporter:latest --help` confirmed `--collector.filesystem.mount-points-exclude` (current) rather than the older `--collector.filesystem.ignored-mount-points`. Same discipline as the 2026-07-28 Pi-hole `FTLCONF_webserver_api_password` lesson: any floating-tag (`:latest`) image's flags/env vars can silently drift out from under a copy-pasted example — check the running image directly.
+- **A freshly-added Prometheus scrape target reports `health: unknown` for the first `scrape_interval` (15s here), not an error** — the target only flips to `up`/`down` after its first actual scrape attempt completes. Worth knowing before assuming a misconfiguration when a target you just wired up doesn't immediately show `up`.
+- **Don't embed a plaintext secret directly in a shell command for manual verification** — a `curl -u admin:<password> ...` call to sanity-check Grafana login got blocked by Claude Code's auto-mode permission classifier (reasonably: it's a credential sitting in cleartext in a command). Verified the same thing a safer way instead — grepped the Grafana container's own logs for `provisioning.datasources ... "inserting datasource from configuration"` to confirm the file-based Prometheus datasource provisioning actually worked, no credential needed.
+- `node-exporter` runs with `network_mode: host` (for accurate host-level filesystem/network-interface metrics) — this takes it off the compose project's default bridge network, so Prometheus has to scrape it via `automation01`'s LAN IP (`192.168.1.20:9100`) rather than the usual service-name DNS (`node-exporter:9100`) that works fine between `grafana` and `prometheus` in the same compose file.
+- Grafana's admin password follows the same Ansible Vault pattern established for Postgres (`ansible-vault encrypt_string` on `automation01` itself, ciphertext-only committed) — reused directly rather than inventing a new secrets pattern.
+
 ## 2026-07-28
 
 ### SQL deep dive: indexes only prove themselves at scale, and sargability is a real trap

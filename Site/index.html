@@ -3,263 +3,169 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="color-scheme" content="light dark">
+<meta name="color-scheme" content="dark">
 <title>Where everything lives — Kyle's Homelab</title>
-<script>
-  (function () {
-    try {
-      if (localStorage.getItem('theme') === 'light') {
-        document.documentElement.setAttribute('data-theme', 'light');
-      }
-    } catch (e) {}
-  })();
-</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; transition: background-color .2s ease, border-color .2s ease, color .2s ease; }
+  * { box-sizing: border-box; }
   html, body { margin: 0; }
 
-  /* dark is the default look; :root[data-theme="light"] overrides it */
-  /* palette: Amber Terminal — neutrals rebuilt for real AA contrast */
+  /* same token system as the portfolio site */
   :root {
-    --bg: #10161a; --panel: #1a2226; --panel-2: #151c20; --border: #2f3a41;
-    --text: #f0ece2; --text-dim: #aab4b9; --text-faint: #8b969c;
-    --pull: #fbbf24; --pull-soft: #3a2e1a; --build: #2dd4bf; --build-soft: #14302c;
-    --alt: #a78bfa; --code-bg: #0c1114; --hub: #fbbf24;
-  }
-  :root[data-theme="light"] {
-    --bg: #f3efe6; --panel: #fdfbf6; --panel-2: #eae4d6; --border: #ddd5c2;
-    --text: #201d17; --text-dim: #5c5346; --text-faint: #6f6656;
-    --pull: #b45309; --pull-soft: #f6e6c8; --build: #0d9488; --build-soft: #d7f5ef;
-    --alt: #7c3aed; --code-bg: #ece5d5; --hub: #b45309;
+    --void: #08090a; --carbon: #0f1011; --obsidian: #161718;
+    --graphite: #23252a; --smoke: #383b3f;
+    --ash: #62666d; --fog: #8a8f98; --mist: #d0d6e0; --bone: #e5e5e6; --paper: #ffffff;
+    --lime: #e4f222; --lime-ink: #08090a;
+    --green: #27a644; --teal: #02b8cc; --violet: #8b5cf6;
+    --r-btn: 6px; --r-card: 14px; --r-pill: 9999px;
   }
 
   body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: Seravek, 'Gill Sans Nova', Ubuntu, Calibri, 'DejaVu Sans', sans-serif;
+    background: var(--void);
+    color: var(--bone);
+    font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    font-feature-settings: 'cv01' 1, 'ss03' 1, 'zero' 1;
     line-height: 1.55;
-    padding: 3rem 1.5rem 5rem;
+    padding: 0 24px 96px;
   }
-  .page { max-width: 920px; margin: 0 auto; }
+  ::selection { background: var(--lime); color: var(--lime-ink); }
+  .page { max-width: 960px; margin: 0 auto; }
 
-  h1, h2, .card-name {
-    font-family: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, ui-serif, serif;
-    font-weight: 600;
-    text-wrap: balance;
-  }
-  code, .mono, .eyebrow, .tag, .edge-label {
-    font-family: ui-monospace, 'JetBrains Mono', 'Cascadia Code', Menlo, Consolas, monospace;
-  }
-  a { color: var(--hub); }
+  h1, h2, .card-name { font-weight: 590; color: var(--paper); margin: 0; letter-spacing: -0.015em; text-wrap: balance; }
+  code, .mono, .eyebrow, .tag, .edge-label { font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; }
+  a { color: var(--mist); }
 
-  header { margin-bottom: 2.6rem; }
+  /* ---- nav, shared with the portfolio ---- */
+  header.nav {
+    position: sticky; top: 0; z-index: 40;
+    background: rgba(8,9,10,0.75); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 1px 0 var(--graphite);
+    margin: 0 -24px 3rem;
+  }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 24px; max-width: 960px; margin: 0 auto; }
+  .brand { display: flex; align-items: center; gap: 9px; font-weight: 590; color: var(--paper); font-size: 14px; text-decoration: none; }
+  .brand .mark { flex: none; display: inline-flex; }
+  .card-icon { display: inline-flex; color: var(--fog); margin-right: 0.5rem; vertical-align: -5px; }
+  .card-name-row { display: flex; align-items: center; }
+  .bastion .card-icon, .proxmox-label .card-icon { color: inherit; }
+  .nav-links a { font-size: 13px; color: var(--fog); padding: 8px 12px; border-radius: var(--r-btn); }
+  .nav-links a:hover { color: var(--paper); background: rgba(255,255,255,0.05); }
+
   .top-row { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.4rem; }
   .top-link {
-    font-size: 0.78rem;
-    color: var(--text-faint);
-    text-decoration: none;
-    display: inline-block;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 0.25rem 0.7rem;
+    font-size: 0.78rem; color: var(--fog); text-decoration: none; display: inline-block;
+    box-shadow: 0 0 0 1px var(--graphite) inset; border-radius: 999px; padding: 0.3rem 0.8rem;
   }
-  .top-link:hover { color: var(--hub); border-color: var(--hub); }
-  .theme-toggle {
-    font: inherit;
-    cursor: pointer;
-    background: var(--panel);
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    margin-left: auto;
-  }
-  .theme-toggle:hover { color: var(--hub); border-color: var(--hub); }
-  .eyebrow {
-    font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase;
-    color: var(--text-dim); display: block; margin-bottom: 0.9rem;
-  }
-  h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); line-height: 1.2; margin: 0 0 0.9rem; max-width: 26ch; }
-  header p { color: var(--text-dim); max-width: 66ch; font-size: 1.02rem; margin: 0; }
+  .top-link:hover { color: var(--paper); box-shadow: 0 0 0 1px var(--smoke) inset; }
+
+  .hero-zone { position: relative; margin: 0 -24px; padding: 0 24px; overflow: hidden; }
+  .net-canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.75; }
+  .hero-zone-content { position: relative; z-index: 1; }
+
+  .eyebrow { font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fog); display: block; margin-bottom: 0.9rem; }
+  h1 { font-size: clamp(1.8rem, 4vw, 2.5rem); line-height: 1.15; margin: 0 0 0.9rem; max-width: 24ch; }
+  header.page-head p { color: var(--fog); max-width: 66ch; font-size: 1.02rem; margin: 0; }
+  header.page-head { margin-bottom: 2.8rem; }
 
   .card {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
+    background: var(--carbon);
+    box-shadow: 0 0 0 1px var(--graphite) inset;
+    border-radius: var(--r-card);
     padding: 1.1rem 1.3rem;
   }
   .card-name { font-size: 1.05rem; margin: 0 0 0.15rem; }
-  .card-sub { font-size: 0.78rem; color: var(--text-faint); margin: 0 0 0.7rem; }
-  .card ul { margin: 0; padding-left: 1.05rem; font-size: 0.88rem; color: var(--text-dim); }
-  .card li { margin: 0.2rem 0; }
-  .card li b { color: var(--text); font-weight: 600; }
+  .card-sub { font-size: 0.78rem; color: var(--fog); margin: 0 0 0.7rem; }
+  .card ul { margin: 0; padding-left: 1.05rem; font-size: 0.88rem; color: var(--fog); }
+  .card li { margin: 0.25rem 0; }
+  .card li b { color: var(--bone); font-weight: 510; }
 
-  .actors {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 0.4rem;
-  }
-  .actors .card { border-color: var(--text-dim); }
+  .actors { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.4rem; }
 
-  .edge {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: var(--text-faint);
-    font-size: 0.68rem;
-    padding: 0.5rem 0;
-  }
-  .edge .line { width: 1px; height: 1.4rem; background: var(--border); }
+  .edge { display: flex; flex-direction: column; align-items: center; color: var(--fog); font-size: 0.68rem; padding: 0.6rem 0; }
+  .edge .line { width: 1px; height: 1.4rem; background: var(--graphite); }
   .edge .label {
-    text-align: center;
-    letter-spacing: 0.02em;
-    background: var(--bg);
-    padding: 0.15rem 0.5rem;
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    margin: 0.3rem 0;
-    color: var(--text-dim);
+    text-align: center; letter-spacing: 0.02em; background: var(--void);
+    padding: 0.2rem 0.6rem; box-shadow: 0 0 0 1px var(--graphite) inset;
+    border-radius: 999px; margin: 0.3rem 0; color: var(--fog);
   }
 
   .bastion {
-    background: var(--panel);
-    border: 2px solid var(--hub);
-    border-radius: 12px;
+    background: var(--carbon);
+    box-shadow: 0 0 0 2px var(--lime) inset, 0 0 24px -8px rgba(228,242,34,0.25);
+    border-radius: 14px;
     padding: 1.5rem 1.7rem;
     margin: 0.2rem 0 0.6rem;
   }
   .bastion-head { display: flex; align-items: baseline; gap: 0.7rem; flex-wrap: wrap; margin-bottom: 0.3rem; }
-  .bastion .card-name { font-size: 1.4rem; color: var(--hub); }
+  .bastion .card-name { font-size: 1.4rem; color: var(--lime); }
   .bastion-tag {
-    font-size: 0.66rem; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--hub); border: 1px solid var(--hub); border-radius: 4px; padding: 0.12rem 0.4rem;
+    font-size: 0.64rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--lime-ink);
+    background: var(--lime); border-radius: 4px; padding: 0.14rem 0.45rem; font-weight: 500;
   }
-  .bastion-ip { font-size: 0.85rem; color: var(--text-faint); margin: 0 0 1rem; }
-  .roles {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.7rem;
-  }
-  .role {
-    background: var(--panel-2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 0.7rem 0.8rem;
-  }
-  .role .n { font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); display: block; margin-bottom: 0.3rem; }
-  .role .t { font-size: 0.85rem; color: var(--text); }
+  .bastion-ip { font-size: 0.85rem; color: var(--fog); margin: 0 0 1rem; }
+  .roles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.7rem; }
+  .role { background: var(--obsidian); box-shadow: 0 0 0 1px var(--graphite) inset; border-radius: 8px; padding: 0.7rem 0.8rem; }
+  .role .n { font-size: 0.62rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fog); display: block; margin-bottom: 0.3rem; }
+  .role .t { font-size: 0.85rem; color: var(--bone); }
   .role-docker { grid-column: 1 / -1; }
-  .svc-list {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.25rem 1.2rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .svc-list li { font-size: 0.83rem; color: var(--text-dim); }
-  .svc-list li b { color: var(--text); font-weight: 600; }
+  .svc-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.25rem 1.2rem; margin: 0; padding: 0; list-style: none; }
+  .svc-list li { font-size: 0.83rem; color: var(--fog); }
+  .svc-list li b { color: var(--bone); font-weight: 510; }
 
-  .fanout-label {
-    text-align: center;
-    font-size: 0.7rem;
-    color: var(--text-faint);
-    margin: 0.6rem 0 1rem;
-  }
+  .fanout-label { text-align: center; font-size: 0.7rem; color: var(--fog); margin: 0.6rem 0 1rem; font-family: 'JetBrains Mono', monospace; letter-spacing: 0.03em; }
 
   .proxmox-box {
-    border: 2px solid var(--build);
+    box-shadow: 0 0 0 2px var(--teal) inset;
     border-radius: 14px;
     padding: 2rem 1.5rem 1.5rem;
     position: relative;
     margin-top: 1.1rem;
   }
   .proxmox-label {
-    position: absolute;
-    top: -0.85rem;
-    left: 1.2rem;
-    background: var(--bg);
-    padding: 0 0.6rem;
-    font-size: 0.76rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--build);
-    font-weight: 600;
+    position: absolute; top: -0.85rem; left: 1.2rem; background: var(--void);
+    padding: 0 0.6rem; font-size: 0.76rem; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--teal); font-weight: 510; font-family: 'JetBrains Mono', monospace;
   }
   .proxmox-box .bastion { margin-top: 0; }
-  .managed-hosts {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-  }
+  .managed-hosts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
   .managed-hosts .card { display: flex; flex-direction: column; }
   .managed-hosts .edge-label {
-    font-size: 0.66rem;
-    color: var(--text-dim);
-    background: var(--code-bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 0.25rem 0.5rem;
-    margin: -0.2rem 0 0.7rem;
-    display: inline-block;
-    align-self: flex-start;
+    font-size: 0.66rem; color: var(--fog); background: var(--void);
+    box-shadow: 0 0 0 1px var(--graphite) inset; border-radius: 4px; padding: 0.25rem 0.5rem;
+    margin: -0.2rem 0 0.7rem; display: inline-block; align-self: flex-start;
   }
-  .managed-hosts .card.dashed { border-style: dashed; border-color: var(--alt); }
-  .managed-hosts .card.dashed .edge-label { color: var(--alt); border-color: var(--alt); background: transparent; }
+  .managed-hosts .card.dashed { box-shadow: 0 0 0 1px var(--violet) inset; }
+  .managed-hosts .card.dashed .edge-label { color: var(--violet); box-shadow: 0 0 0 1px var(--violet) inset; background: transparent; }
 
-  .github-row {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1.6rem;
-    flex-wrap: wrap;
-  }
+  .github-row { display: flex; align-items: center; gap: 1rem; margin-top: 1.6rem; flex-wrap: wrap; }
   .github-row .card { flex: 1 1 240px; }
-  .github-arrow {
-    color: var(--text-faint);
-    font-size: 0.8rem;
-    text-align: center;
-    flex: 0 0 auto;
-    min-width: 140px;
-  }
+  .github-arrow { color: var(--fog); font-size: 0.8rem; text-align: center; flex: 0 0 auto; min-width: 140px; }
   .github-arrow .label {
-    display: block;
-    font-size: 0.68rem;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 0.2rem 0.6rem;
-    margin-top: 0.3rem;
+    display: block; font-size: 0.68rem; background: var(--void);
+    box-shadow: 0 0 0 1px var(--graphite) inset; border-radius: 999px; padding: 0.2rem 0.6rem; margin-top: 0.3rem;
   }
 
   .legend {
-    margin-top: 3rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--border);
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1.5rem;
-    font-size: 0.83rem;
-    color: var(--text-dim);
+    margin-top: 3rem; padding-top: 1.5rem; box-shadow: 0 -1px 0 var(--graphite);
+    display: flex; flex-wrap: wrap; gap: 1.5rem; font-size: 0.83rem; color: var(--fog);
   }
   .legend-item { display: flex; align-items: center; gap: 0.5rem; }
-  .legend-line { width: 1.4rem; height: 0; border-top: 1px solid var(--text-faint); }
-  .legend-line.dashed { border-top-style: dashed; border-color: var(--alt); }
-  .legend-line.solid-hub { border-top: 2px solid var(--hub); }
-  .legend-line.solid-build { border-top: 2px solid var(--build); }
+  .legend-line { width: 1.4rem; height: 0; border-top: 1px solid var(--ash); }
+  .legend-line.dashed { border-top-style: dashed; border-color: var(--violet); }
+  .legend-line.solid-hub { border-top: 2px solid var(--lime); }
+  .legend-line.solid-build { border-top: 2px solid var(--teal); }
 
-  .closing { margin-top: 1.6rem; font-size: 1rem; max-width: 66ch; color: var(--text); }
-  .closing b { color: var(--hub); }
+  .closing { margin-top: 1.6rem; font-size: 1rem; max-width: 66ch; color: var(--bone); }
+  .closing b { color: var(--lime); }
 
   footer {
-    margin-top: 3.5rem;
-    padding-top: 1.2rem;
-    border-top: 1px solid var(--border);
-    font-size: 0.78rem;
-    color: var(--text-faint);
+    margin-top: 3.5rem; padding-top: 1.2rem; box-shadow: 0 -1px 0 var(--graphite);
+    font-size: 0.78rem; color: var(--fog);
   }
-  footer a { color: var(--text-faint); }
-  footer a:hover { color: var(--hub); }
+  footer a { color: var(--fog); }
+  footer a:hover { color: var(--paper); }
 
   @media (max-width: 720px) {
     .actors { grid-template-columns: 1fr; }
@@ -272,22 +178,37 @@
 </style>
 </head>
 <body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="../index.html"><svg class="mark" width="24" height="22" viewBox="0 0 24 22" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 6.6L5.4 16.2M12 6.6l6.6 9.6M6.2 16.6h11.6" stroke="#e4f222" stroke-width="1.3" stroke-linecap="round"/><circle cx="12" cy="4.6" r="2.1" fill="#e4f222"/><circle cx="4.4" cy="17.2" r="2.1" fill="#e4f222"/><circle cx="19.6" cy="17.2" r="2.1" fill="#e4f222"/></svg>Kyle Dupont</a>
+    <nav class="nav-links">
+      <a href="https://github.com/kyledupont/Homelab" target="_blank" rel="noopener">Repo ↗</a>
+    </nav>
+  </div>
+</header>
+
 <div class="page">
 
-  <div class="top-row">
-    <a class="top-link" href="https://github.com/kyledupont/Homelab">&larr; github.com/kyledupont/Homelab</a>
-    <button class="top-link theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light mode">☀️ Light</button>
-  </div>
+  <div class="hero-zone">
+    <canvas id="netbg" class="net-canvas" aria-hidden="true"></canvas>
+    <div class="hero-zone-content">
+      <div class="top-row">
+        <a class="top-link" href="../index.html">&larr; back to portfolio</a>
+        <a class="top-link" href="https://github.com/kyledupont/Homelab" target="_blank" rel="noopener">github.com/kyledupont/Homelab ↗</a>
+      </div>
 
-  <header>
-    <span class="eyebrow">Kyle's Homelab — system map</span>
-    <h1>Where everything lives, and what talks to what</h1>
-    <p>Six machines, one of which quietly became the control point for all the others. This traces every real connection built so far — what runs where, what SSHes into what, and with which key. Kept current as the lab evolves; see the <a href="https://github.com/kyledupont/Homelab">repo</a> for the full write-up behind every decision.</p>
-  </header>
+      <header class="page-head">
+        <span class="eyebrow">Kyle's Homelab — system map</span>
+        <h1>Where everything lives, and what talks to what</h1>
+        <p>Six machines, one of which quietly became the control point for all the others. This traces every real connection built so far — what runs where, what SSHes into what, and with which key. Kept current as the lab evolves; see the <a href="https://github.com/kyledupont/Homelab" target="_blank" rel="noopener">repo</a> for the full write-up behind every decision.</p>
+      </header>
+    </div>
+  </div>
 
   <div class="actors">
     <div class="card">
-      <div class="card-name">Windows workstation</div>
+      <div class="card-name card-name-row"><span class="card-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="3.5" width="15" height="10.5" rx="1.4" stroke="currentColor" stroke-width="1.4"/><path d="M7.5 17.5h5M10 14v3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>Windows workstation</div>
       <div class="card-sub">the dev machine</div>
       <ul>
         <li>The repo, edited locally</li>
@@ -296,7 +217,7 @@
       </ul>
     </div>
     <div class="card">
-      <div class="card-name">GitHub</div>
+      <div class="card-name card-name-row"><span class="card-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5.5" cy="4.5" r="1.8" stroke="currentColor" stroke-width="1.4"/><circle cx="5.5" cy="15.5" r="1.8" stroke="currentColor" stroke-width="1.4"/><circle cx="15" cy="10" r="1.8" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 6.3v7.4M7.1 9.2c1.6 1.7 3.4 1.9 6.2 1.9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>GitHub</div>
       <div class="card-sub">github.com/kyledupont/Homelab</div>
       <ul>
         <li>Source of truth — every change lands here via <code>git push</code></li>
@@ -314,17 +235,17 @@
   </div>
 
   <div class="proxmox-box">
-    <span class="proxmox-label">Proxmox (hypervisor) · 192.168.1.10 — every card below runs as a VM on this one physical box</span>
+    <span class="proxmox-label"><span class="card-icon" style="vertical-align:-3px; margin-right:0.4rem;"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="6.5" width="9" height="9" rx="1.2" stroke="currentColor" stroke-width="1.3"/><rect x="8.5" y="2.5" width="9" height="9" rx="1.2" stroke="currentColor" stroke-width="1.3" fill="#08090a"/></svg></span>Proxmox (hypervisor) · 192.168.1.10 — every card below runs as a VM on this one physical box</span>
 
     <div class="bastion">
       <div class="bastion-head">
-        <span class="card-name">automation01</span>
+        <span class="card-name card-name-row"><span class="card-icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="2.5" width="15" height="6" rx="1.2" stroke="currentColor" stroke-width="1.4"/><rect x="2.5" y="11.5" width="15" height="6" rx="1.2" stroke="currentColor" stroke-width="1.4"/><circle cx="6" cy="5.5" r="0.9" fill="currentColor"/><circle cx="6" cy="14.5" r="0.9" fill="currentColor"/></svg></span>automation01</span>
         <span class="bastion-tag">the bastion</span>
       </div>
       <div class="bastion-ip"><code>192.168.1.20</code> — the one machine everything else routes through</div>
       <div class="roles">
         <div class="role role-docker">
-          <span class="n">Docker host — 11 containers</span>
+          <span class="n card-name-row"><span class="card-icon"><svg width="15" height="15" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 2.5l7.5 3.9L10 10.3 2.5 6.4 10 2.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M2.5 10.5L10 14.4l7.5-3.9M2.5 14.5L10 18.4l7.5-3.9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>Docker host — 11 containers</span>
           <ul class="svc-list">
             <li><b>n8n</b> — workflow automation</li>
             <li><b>Postgres</b> — SQL Database</li>
@@ -350,19 +271,19 @@
     <div class="managed-hosts">
       <div class="card">
         <span class="edge-label">SSH, ansible key — ongoing config</span>
-        <div class="card-name" style="font-size:1rem;">plex01</div>
+        <div class="card-name card-name-row" style="font-size:1rem;"><span class="card-icon"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.4"/><path d="M8.3 6.8v6.4l5.4-3.2-5.4-3.2z" fill="currentColor"/></svg></span>plex01</div>
         <div class="card-sub"><code>192.168.1.50</code></div>
         <ul><li>Plex, Portainer Agent, node-exporter</li><li>Managed via <code>deploy_plex.yml</code></li></ul>
       </div>
       <div class="card">
         <span class="edge-label">SSH bootstrap + kubectl :6443 ongoing</span>
-        <div class="card-name" style="font-size:1rem;">k3s-master01</div>
+        <div class="card-name card-name-row" style="font-size:1rem;"><span class="card-icon"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M10 10L4 4M10 10l6-6M10 10l0 8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="10" cy="10" r="2" fill="currentColor"/><circle cx="4" cy="4" r="1.6" stroke="currentColor" stroke-width="1.3"/><circle cx="16" cy="4" r="1.6" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="18" r="1.6" stroke="currentColor" stroke-width="1.3"/></svg></span>k3s-master01</div>
         <div class="card-sub"><code>192.168.1.60</code></div>
         <ul><li>Single-node K3s cluster</li><li>node_exporter (native systemd — no Docker here)</li></ul>
       </div>
       <div class="card dashed">
         <span class="edge-label">NFS only — not managed</span>
-        <div class="card-name" style="font-size:1rem;">truenas01</div>
+        <div class="card-name card-name-row" style="font-size:1rem;"><span class="card-icon"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><ellipse cx="10" cy="4.5" rx="7" ry="2.2" stroke="currentColor" stroke-width="1.3"/><path d="M3 4.5v5.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2V4.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 10v5.5c0 1.2 3.1 2.2 7 2.2s7-1 7-2.2V10" stroke="currentColor" stroke-width="1.3"/></svg></span>truenas01</div>
         <div class="card-sub"><code>192.168.1.40</code></div>
         <ul><li>ZFS storage, NFS/SMB exports</li><li>Driven by its own web UI, deliberately</li></ul>
       </div>
@@ -370,16 +291,16 @@
   </div>
 
   <div class="github-row">
-    <div class="card" style="border-color: var(--text-dim);">
-      <div class="card-name" style="font-size:1rem;">GitHub</div>
+    <div class="card">
+      <div class="card-name card-name-row" style="font-size:1rem;"><span class="card-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="5.5" cy="4.5" r="1.8" stroke="currentColor" stroke-width="1.4"/><circle cx="5.5" cy="15.5" r="1.8" stroke="currentColor" stroke-width="1.4"/><circle cx="15" cy="10" r="1.8" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 6.3v7.4M7.1 9.2c1.6 1.7 3.4 1.9 6.2 1.9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>GitHub</div>
       <div class="card-sub">the same repo, from below this time</div>
     </div>
     <div class="github-arrow">
       &rarr;
       <span class="label">runner polls for jobs, pulls the repo, runs playbooks locally</span>
     </div>
-    <div class="card" style="border-color: var(--hub);">
-      <div class="card-name" style="font-size:1rem; color: var(--hub);">automation01</div>
+    <div class="card" style="box-shadow: 0 0 0 1px var(--lime) inset;">
+      <div class="card-name card-name-row" style="font-size:1rem; color: var(--lime);"><span class="card-icon" style="color:var(--lime);"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2.5" y="2.5" width="15" height="6" rx="1.2" stroke="currentColor" stroke-width="1.4"/><rect x="2.5" y="11.5" width="15" height="6" rx="1.2" stroke="currentColor" stroke-width="1.4"/><circle cx="6" cy="5.5" r="0.9" fill="currentColor"/><circle cx="6" cy="14.5" r="0.9" fill="currentColor"/></svg></span>automation01</div>
       <div class="card-sub">closing the loop</div>
     </div>
   </div>
@@ -394,34 +315,85 @@
   <p class="closing">The pattern underneath all of this: <b>one machine holds the keys and the tools, everything else just gets reached out to.</b> The Windows workstation is the exception — Terraform is a native Windows binary, so it's the one tool that talks to Proxmox directly instead of routing through automation01.</p>
 
   <footer>
-    Generated as part of <a href="https://github.com/kyledupont/Homelab">Kyle's Homelab</a> — see <a href="https://github.com/kyledupont/Homelab/blob/main/Docs/Kubernetes.md">Docs/Kubernetes.md</a>, <a href="https://github.com/kyledupont/Homelab/blob/main/Docs/Ansible.md">Docs/Ansible.md</a>, and <a href="https://github.com/kyledupont/Homelab/blob/main/Docs/Terraform.md">Docs/Terraform.md</a> for the reasoning behind each piece.
+    Generated as part of <a href="https://github.com/kyledupont/Homelab" target="_blank" rel="noopener">Kyle's Homelab</a> — see <a href="https://github.com/kyledupont/Homelab/blob/main/Docs/Kubernetes.md" target="_blank" rel="noopener">Docs/Kubernetes.md</a>, <a href="https://github.com/kyledupont/Homelab/blob/main/Docs/Ansible.md" target="_blank" rel="noopener">Docs/Ansible.md</a>, and <a href="https://github.com/kyledupont/Homelab/blob/main/Docs/Terraform.md" target="_blank" rel="noopener">Docs/Terraform.md</a> for the reasoning behind each piece.
   </footer>
 
 </div>
-
 <script>
 (function () {
-  var root = document.documentElement;
-  var btn = document.getElementById('theme-toggle');
-  function isLight() { return root.getAttribute('data-theme') === 'light'; }
-  function sync() {
-    var light = isLight();
-    btn.textContent = light ? '🌙 Dark' : '☀️ Light';
-    btn.setAttribute('aria-label', light ? 'Switch to dark mode' : 'Switch to light mode');
-    var meta = document.querySelector('meta[name="color-scheme"]');
-    if (meta) meta.setAttribute('content', light ? 'light' : 'dark');
-  }
-  sync();
-  btn.addEventListener('click', function () {
-    if (isLight()) {
-      root.removeAttribute('data-theme');
-      localStorage.setItem('theme', 'dark');
-    } else {
-      root.setAttribute('data-theme', 'light');
-      localStorage.setItem('theme', 'light');
+  var canvas = document.getElementById('netbg');
+  var zone = canvas.closest('.hero-zone');
+  var ctx = canvas.getContext('2d');
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var nodes = [];
+  var W = 0, H = 0;
+  var MAX_DIST = 130;
+
+  function seedNodes() {
+    var count = Math.max(16, Math.min(34, Math.round((W * H) / 16000)));
+    nodes = [];
+    for (var i = 0; i < count; i++) {
+      nodes.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        vx: (Math.random() - 0.5) * 0.22,
+        vy: (Math.random() - 0.5) * 0.22,
+        lime: Math.random() < 0.28
+      });
     }
-    sync();
-  });
+  }
+
+  function resize() {
+    W = zone.offsetWidth;
+    H = zone.offsetHeight;
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    seedNodes();
+  }
+
+  function step() {
+    ctx.clearRect(0, 0, W, H);
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > W) n.vx *= -1;
+      if (n.y < 0 || n.y > H) n.vy *= -1;
+      n.x = Math.max(0, Math.min(W, n.x));
+      n.y = Math.max(0, Math.min(H, n.y));
+    }
+    for (var i = 0; i < nodes.length; i++) {
+      for (var j = i + 1; j < nodes.length; j++) {
+        var a = nodes[i], b = nodes[j];
+        var dx = a.x - b.x, dy = a.y - b.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < MAX_DIST) {
+          var alpha = (1 - dist / MAX_DIST) * 0.16;
+          ctx.strokeStyle = 'rgba(208,214,224,' + alpha + ')';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+    }
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.lime ? 1.8 : 1.4, 0, Math.PI * 2);
+      ctx.fillStyle = n.lime ? 'rgba(228,242,34,0.55)' : 'rgba(138,143,152,0.5)';
+      ctx.fill();
+    }
+    if (!reduceMotion) requestAnimationFrame(step);
+  }
+
+  resize();
+  step();
+  window.addEventListener('resize', resize, { passive: true });
 })();
 </script>
 </body>

@@ -1,5 +1,17 @@
 # Lessons Learned
 
+## 2026-10-07
+
+### Experimented with a draw.io network diagram
+- Built out a more detailed draw.io version of the homelab layout (`Docs/diagrams/homelab-layout.drawio`, exported to `homelab-layout.png`) covering the full host/service inventory, physical hardware, and planned items. Purely exploratory — not wired into README/Docs navigation and not a replacement for the live [Site/index.html](../Site/index.html) system map.
+
+### A stray dev-server.log from an unrelated project got committed into this repo
+- While testing the draw.io diagram above, a Next.js dev server log from the separate `class-compass` project (`dev-server.log`, ~200 lines) ended up staged and committed alongside it — almost certainly a broad `git add` sweeping up whatever was sitting in the working directory, unrelated to the actual change. Removed it from tracking and added `dev-server.log` to `.gitignore`.
+- **General lesson: a broad `git add .`/`git add -A` picks up anything sitting in the working directory, not just what you meant to commit** — worth a `git status` glance before committing, especially when another project's tooling (here, a dev server) was running nearby.
+
+### Jellyfin deployed alongside Plex for a side-by-side evaluation
+- Stood up Jellyfin on `plex01`, reading the exact same NFS-mounted media library as Plex but **mounted read-only** so the evaluation can't rename/delete/write metadata into shared media — Jellyfin's own metadata/cache lives in a separate `jellyfin_config` volume instead. Not a committed switch away from Plex, see [README.md](../README.md) "Docker Services".
+
 ## 2026-08-25
 
 ### Extending monitoring to plex01 and k3s-master01 uncovered a real, months-old deploy bug

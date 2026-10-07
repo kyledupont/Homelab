@@ -91,6 +91,7 @@ See **[my portfolio](https://kyledupont.github.io/)** for the professional front
 - Pi-hole (automation01) — network-wide DNS + ad blocking, deployed 2026-07-28; ad blocking confirmed actually working (verified via query log + a known ad domain resolving to `0.0.0.0`) after manually pointing one PC's DNS at it. Router-wide DHCP still not pointed at it, so not yet network-wide — see [Docs/Network.md](Docs/Network.md).
 - Grafana + Prometheus (automation01) — deployed via Ansible 2026-08-25, admin password from Ansible Vault; Prometheus auto-provisioned as a Grafana datasource via file-based config, plus a hand-built "Homelab Overview" dashboard (also provisioned as code) with a per-host picker for CPU/memory/disk/uptime and all-hosts trend graphs. See [Docs/Architecture.md](Docs/Architecture.md).
 - Node Exporter — running on `automation01` and `plex01` (Docker, `network_mode: host` for accurate host-level metrics) and natively as a systemd service on `k3s-master01` (no Docker daemon there — see [Docs/Kubernetes.md](Docs/Kubernetes.md)). All three scraped by Prometheus above.
+- Jellyfin (plex01) — deployed 2026-10-07 for a side-by-side evaluation against Plex, not a committed switch; reads the exact same NFS-mounted library read-only so testing can't rename/delete/write metadata into shared media, own config/cache in a separate volume, Homepage tile on `:8096`.
 
 ## Planned
 
@@ -103,7 +104,6 @@ See **[my portfolio](https://kyledupont.github.io/)** for the professional front
 - Open WebUI
 - Ollama
 - Dozzle — real-time Docker log viewer across hosts, for log review/debugging without shelling in
-- Jellyfin — backup/potential replacement for Plex; standing it up alongside Plex to actually evaluate it, not a committed switch
 - Homelable (network visual mapping — [github.com/Pouzor/homelable](https://github.com/Pouzor/homelable))
 - Keycloak or Authentik — self-hosted OAuth2/OIDC/SAML identity provider for hands-on SSO testing (Okta has no self-hosted option); planned eventual auth layer for the MCP Gateway, see [Docs/AI.md](Docs/AI.md). Idea captured 2026-07-24, not started.
 - Hermes Agent (self-hosted Discord IT-admin agent, via Ollama — see [Docs/AI.md](Docs/AI.md))

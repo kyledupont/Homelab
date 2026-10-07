@@ -16,3 +16,6 @@ crash.*.log
 # Ansible
 **/.vault_pass
 *.retry
+
+# stray logs from unrelated local dev servers
+dev-server.log

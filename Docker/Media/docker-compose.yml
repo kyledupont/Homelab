@@ -14,6 +14,25 @@ services:
     ports:
       - "32400:32400"
 
+  # Side-by-side evaluation against Plex, not a replacement (see README
+  # "Planned"). Reads the exact same NFS-mounted library as Plex, but
+  # read-only - Jellyfin can't rename/delete/write metadata into the shared
+  # media while it's only being tested. Its own metadata and cache live in
+  # the jellyfin_config volume instead.
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - jellyfin_config:/config
+      - /mnt/media:/media:ro
+    ports:
+      - "8096:8096"
+
   portainer_agent:
     image: portainer/agent:latest
     container_name: portainer_agent
@@ -44,3 +63,4 @@ services:
 
 volumes:
   plex_config:
+  jellyfin_config:

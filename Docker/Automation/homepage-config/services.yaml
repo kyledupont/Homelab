@@ -41,3 +41,7 @@
         href: http://192.168.1.50:32400/web
         description: Media server
         icon: plex.png
+    - Jellyfin:
+        href: http://192.168.1.50:8096
+        description: Media server (testing alongside Plex)
+        icon: jellyfin.png

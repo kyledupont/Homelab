@@ -1,0 +1,198 @@
+
+> class-compass@0.1.0 dev
+> next dev
+
+   ▲ Next.js 15.5.22
+   - Local:        http://localhost:3000
+   - Network:      http://169.254.83.107:3000
+   - Environments: .env
+
+ ✓ Starting...
+ ✓ Ready in 1532ms
+ ○ Compiling /random ...
+ ✓ Compiled /random in 618ms (692 modules)
+ GET /random 200 in 962ms
+ GET /random 200 in 84ms
+ GET /random 200 in 115ms
+ ✓ Compiled /icon.svg in 114ms (451 modules)
+ GET /icon.svg?0a4243da3b283f9b 200 in 216ms
+ GET /random 200 in 207ms
+ GET /icon.svg?0a4243da3b283f9b 200 in 14ms
+ GET /random 200 in 104ms
+ ✓ Compiled in 1024ms (706 modules)
+ GET /random 200 in 219ms
+ GET /random 200 in 220ms
+ ✓ Compiled /icon.svg in 65ms (451 modules)
+ GET /icon.svg?0a4243da3b283f9b 200 in 142ms
+ GET /icon.svg?0a4243da3b283f9b 200 in 10ms
+ ✓ Compiled in 298ms (723 modules)
+ GET /random 200 in 177ms
+ GET /random 200 in 179ms
+ GET /icon.svg?0a4243da3b283f9b 200 in 23ms
+ GET /icon.svg?0a4243da3b283f9b 200 in 11ms
+ GET /random 200 in 202ms
+ GET /icon.svg?0a4243da3b283f9b 200 in 11ms
+ GET /random 200 in 114ms
+ GET /icon.svg?0a4243da3b283f9b 200 in 13ms
+ GET /random 200 in 111ms
+ GET /icon.svg?0a4243da3b283f9b 200 in 11ms
+ GET /random 200 in 99ms
+ GET /icon.svg?0a4243da3b283f9b 200 in 11ms
+ ✓ Compiled in 413ms (706 modules)
+ GET /random 200 in 249ms
+ GET /random 200 in 252ms
+ ✓ Compiled /icon.svg in 67ms (451 modules)
+ GET /icon.svg?0a4243da3b283f9b 200 in 152ms
+ GET /icon.svg?0a4243da3b283f9b 200 in 11ms
+ GET /random 200 in 298ms
+ GET /icon.svg?0a4243da3b283f9b 200 in 11ms
+ GET /random 200 in 1069ms
+ GET /icon.svg?0a4243da3b283f9b 200 in 37ms
+ ○ Compiling / ...
+ ✓ Compiled / in 1679ms (711 modules)
+ GET / 200 in 2109ms
+ GET / 200 in 146ms
+ ✓ Compiled /icon.svg in 133ms (455 modules)
+ GET /icon.svg?0a4243da3b283f9b 200 in 311ms
+ ✓ Compiled in 346ms (273 modules)
+ ✓ Compiled in 120ms (273 modules)
+ ✓ Compiled in 121ms (273 modules)
+ ✓ Compiled in 83ms (273 modules)
+ ✓ Compiled in 122ms (273 modules)
+ ✓ Compiled in 113ms (273 modules)
+ ✓ Compiled in 82ms (273 modules)
+ ✓ Compiled in 68ms (273 modules)
+ ✓ Compiled in 89ms (273 modules)
+ ✓ Compiled in 84ms (273 modules)
+ ⨯ Error: Cannot find module './331.js'
+Require stack:
+- D:\Github\class-compass\.next\server\webpack-runtime.js
+- D:\Github\class-compass\.next\server\app\icon.svg\route.js
+- D:\Github\class-compass\node_modules\next\dist\server\require.js
+- D:\Github\class-compass\node_modules\next\dist\server\load-components.js
+- D:\Github\class-compass\node_modules\next\dist\build\utils.js
+- D:\Github\class-compass\node_modules\next\dist\build\swc\options.js
+- D:\Github\class-compass\node_modules\next\dist\build\swc\index.js
+- D:\Github\class-compass\node_modules\next\dist\build\analysis\parse-module.js
+- D:\Github\class-compass\node_modules\next\dist\build\analysis\get-page-static-info.js
+- D:\Github\class-compass\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- D:\Github\class-compass\node_modules\next\dist\server\lib\router-server.js
+- D:\Github\class-compass\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\Github\class-compass\.next\server\app\page.js:2:7506)
+    at Object.<anonymous> (D:\Github\class-compass\.next\server\app\page.js:2:7560) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 3.3s (1044 modules)
+ GET / 500 in 4302ms
+ ⨯ Error: Cannot find module './331.js'
+Require stack:
+- D:\Github\class-compass\.next\server\webpack-runtime.js
+- D:\Github\class-compass\.next\server\pages\_document.js
+- D:\Github\class-compass\node_modules\next\dist\server\require.js
+- D:\Github\class-compass\node_modules\next\dist\server\load-components.js
+- D:\Github\class-compass\node_modules\next\dist\build\utils.js
+- D:\Github\class-compass\node_modules\next\dist\build\swc\options.js
+- D:\Github\class-compass\node_modules\next\dist\build\swc\index.js
+- D:\Github\class-compass\node_modules\next\dist\build\analysis\parse-module.js
+- D:\Github\class-compass\node_modules\next\dist\build\analysis\get-page-static-info.js
+- D:\Github\class-compass\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- D:\Github\class-compass\node_modules\next\dist\server\lib\router-server.js
+- D:\Github\class-compass\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\Github\class-compass\.next\server\app\page.js:2:7506)
+    at Object.<anonymous> (D:\Github\class-compass\.next\server\app\page.js:2:7560) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/'
+}
+ GET / 500 in 246ms
+ ⨯ Error: Cannot find module './331.js'
+Require stack:
+- D:\Github\class-compass\.next\server\webpack-runtime.js
+- D:\Github\class-compass\.next\server\pages\_document.js
+- D:\Github\class-compass\node_modules\next\dist\server\require.js
+- D:\Github\class-compass\node_modules\next\dist\server\load-components.js
+- D:\Github\class-compass\node_modules\next\dist\build\utils.js
+- D:\Github\class-compass\node_modules\next\dist\build\swc\options.js
+- D:\Github\class-compass\node_modules\next\dist\build\swc\index.js
+- D:\Github\class-compass\node_modules\next\dist\build\analysis\parse-module.js
+- D:\Github\class-compass\node_modules\next\dist\build\analysis\get-page-static-info.js
+- D:\Github\class-compass\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- D:\Github\class-compass\node_modules\next\dist\server\lib\router-server.js
+- D:\Github\class-compass\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\Github\class-compass\.next\server\app\page.js:2:7506)
+    at Object.<anonymous> (D:\Github\class-compass\.next\server\app\page.js:2:7560) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/'
+}
+ GET / 500 in 245ms
+ ⨯ Error: Cannot find module './331.js'
+Require stack:
+- D:\Github\class-compass\.next\server\webpack-runtime.js
+- D:\Github\class-compass\.next\server\pages\_document.js
+- D:\Github\class-compass\node_modules\next\dist\server\require.js
+- D:\Github\class-compass\node_modules\next\dist\server\load-components.js
+- D:\Github\class-compass\node_modules\next\dist\build\utils.js
+- D:\Github\class-compass\node_modules\next\dist\build\swc\options.js
+- D:\Github\class-compass\node_modules\next\dist\build\swc\index.js
+- D:\Github\class-compass\node_modules\next\dist\build\analysis\parse-module.js
+- D:\Github\class-compass\node_modules\next\dist\build\analysis\get-page-static-info.js
+- D:\Github\class-compass\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- D:\Github\class-compass\node_modules\next\dist\server\lib\router-server.js
+- D:\Github\class-compass\node_modules\next\dist\server\lib\start-server.js
+    at <unknown> (D:\Github\class-compass\.next\server\app\page.js:2:7506)
+    at Object.<anonymous> (D:\Github\class-compass\.next\server\app\page.js:2:7560) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [Array],
+  page: '/'
+}
+ GET / 500 in 247ms
+ ○ Compiling /_not-found ...
+ ✓ Compiled /_not-found in 891ms (1049 modules)
+ GET / 404 in 1162ms
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\Github\class-compass\.next\cache\webpack\client-development\4.pack.gz_' -> 'D:\Github\class-compass\.next\cache\webpack\client-development\4.pack.gz'
+<w> [webpack.cache.PackFileCacheStrategy] Caching failed for pack: Error: ENOENT: no such file or directory, rename 'D:\Github\class-compass\.next\cache\webpack\server-development\7.pack.gz_' -> 'D:\Github\class-compass\.next\cache\webpack\server-development\7.pack.gz'
+ ✓ Compiled in 173ms (425 modules)
+ ✓ Compiled in 149ms (425 modules)
+ ✓ Compiled in 126ms (425 modules)
+ ✓ Compiled in 81ms (425 modules)
+ ✓ Compiled in 91ms (425 modules)
+ ✓ Compiled in 88ms (425 modules)
+ ✓ Compiled in 137ms (425 modules)
+ ✓ Compiled in 326ms (958 modules)
+ ✓ Compiled in 108ms (425 modules)
+ ✓ Compiled in 83ms (425 modules)
+ ✓ Compiled in 134ms (944 modules)
+ ✓ Compiled in 380ms (958 modules)
+ ✓ Compiled in 98ms (425 modules)
+ ✓ Compiled in 109ms (425 modules)
+ ✓ Compiled in 167ms (425 modules)
+ ✓ Compiled in 422ms (958 modules)
+ ✓ Compiled in 253ms (958 modules)
+ ✓ Compiled / in 178ms (537 modules)
+ ⨯ Error: ENOENT: no such file or directory, open 'D:\Github\class-compass\.next\server\vendor-chunks\next.js'
+    at <unknown> (D:\Github\class-compass\.next\server\app\page.js:434:47)
+    at Object.<anonymous> (D:\Github\class-compass\.next\server\app\page.js:437:3) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Github\\class-compass\\.next\\server\\vendor-chunks\\next.js',
+  page: '/'
+}
+ ○ Compiling /_error ...
+ ✓ Compiled /_error in 516ms (1058 modules)
+ ⨯ [Error: ENOENT: no such file or directory, open 'D:\Github\class-compass\.next\server\pages\_document.js'] {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'D:\\Github\\class-compass\\.next\\server\\pages\\_document.js'
+}
+ GET / 500 in 3119ms
+ GET / 200 in 555ms
+ ✓ Compiled /classes/[classSlug] in 426ms (1059 modules)
+ GET /classes/paladin 200 in 1569ms
+ GET /classes/paladin 200 in 212ms
+[?25h
